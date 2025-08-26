@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Study Assistant</title>
-    
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cstyle%3E.cap-fill { fill: %2305359c; } .tassel-fill { fill: %23125dff; }%3C/style%3E%3Cpath class='cap-fill' d='M128 172.8l-112-56v44.8l112 56 112-56v-44.8l-112 56z'/%3E%3Cpath class='cap-fill' d='M240 72.8L128 16l-112 56.8 112 56 112-56.8zM32 172.8h192v16H32v-16z'/%3E%3Cpath class='tassel-fill' d='M208 88.8v56h16v-56h-16z'/%3E%3C/svg%3E" type="image/svg+xml">
     <!-- Fonts and Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    <style>
     /* Global Styles */
+    
 * {
     margin: 0;
     padding: 0;
@@ -34,17 +35,18 @@
     --accent-color: #4e73df;
     --text-color: #333;
     --light-text: #fff;
-    --background: #f0f2f5;
+    --background: #f0f4f8; /* Changed background */
     --card-bg: #fff;
     --success: #28a745;
     --warning: #ffc107;
     --danger: #dc3545;
     --info: #17a2b8;
     --border-color: #e0e0e0;
+    --hover-glow: rgba(78, 115, 223, 0.4);
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif; /* Changed font */
     background: var(--background);
     color: var(--text-color);
     overflow-x: hidden;
@@ -204,6 +206,7 @@ body {
     text-align: center;
     position: relative;
     width: 350px;
+    max-width: 90%;
     padding: 40px;
     height: fit-content;
     background-color: rgba(77, 77, 77, 0.685);
@@ -214,16 +217,26 @@ body {
     box-shadow: 10px 10px 40px rgba(0, 0, 0, 0.2),
                 -10px -10px 40px rgba(0, 0, 0, 0.2);
 }
-
 .login img {
     height: 80px;
     margin-bottom: 30px;
 }
 
 @media (max-width:400px) {
-    .login {
+   .login {
         width: 90%;
-        padding: 30px 20px;
+        padding: 25px 20px;
+    }
+    
+    .login h1 {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+    }
+    
+    .login form .input-box input,
+    .login form .input-box select {
+        padding: 0.8rem 2.7rem 0.8rem 1rem;
+        font-size: 1rem;
     }
 }
 
@@ -338,8 +351,8 @@ body {
 
 /* Navigation */
 .side-nav {
-    width: 240px;
-    background-color: var(--primary-color);
+    width: 250px;
+    background-color: var(--secondary-color);
     height: 100vh;
     position: fixed;
     left: 0;
@@ -495,7 +508,27 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
+
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.btn:hover:before {
+    width: 100%;
+}
+
 
 .btn:disabled {
     background-color: #ccc;
@@ -511,7 +544,7 @@ body {
 .btn-primary:hover:not(:disabled) {
     background-color: var(--primary-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(18, 93, 255, 0.4);
+    box-shadow: 0 6px 20px var(--hover-glow);
 }
 
 .btn-secondary {
@@ -532,6 +565,7 @@ body {
 .btn-outline:hover {
     background-color: var(--secondary-color);
     color: var(--light-text);
+    transform: translateY(-2px);
 }
 
 .login button {
@@ -561,15 +595,22 @@ body {
     border-radius: 30px;
     background: var(--card-bg);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     font-weight: 500;
+    border: 2px solid transparent;
+}
+
+.subject-filter:hover {
+    transform: translateY(-2px);
+    border-color: var(--secondary-color);
 }
 
 .subject-filter.active {
     background: var(--secondary-color);
     color: var(--light-text);
     box-shadow: 0 4px 10px rgba(18, 93, 255, 0.3);
+    border-color: var(--secondary-color);
 }
 
 .quiz-grid {
@@ -578,108 +619,173 @@ body {
     gap: 25px;
 }
 
+/* NEW QUIZ CARD DESIGN */
 .quiz-card {
-    background: var(--card-bg);
-    border-radius: 15px;
+    background: linear-gradient(145deg, #ffffff, #e6e9ee);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     position: relative;
     display: flex;
     flex-direction: column;
+    border: none;
 }
 
 .quiz-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.quiz-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, var(--secondary-color), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.quiz-card:hover::before {
+    opacity: 0.1;
 }
 
 .quiz-image {
     width: 100%;
     height: 160px;
-    object-fit: cover;
+    background-size: cover;
+    background-position: center;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    transition: clip-path 0.3s ease;
+}
+
+.quiz-card:hover .quiz-image {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .quiz-content {
-    padding: 20px;
+    padding: 25px;
     flex-grow: 1;
+    position: relative;
+    z-index: 2;
 }
 
 .quiz-title {
-    font-size: 1.25em;
-    margin-bottom: 10px;
-    font-weight: 600;
+    font-size: 1.35em;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
 .quiz-description {
-    color: #666;
-    margin-bottom: 15px;
-    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    line-height: 1.5;
 }
 
-/* Quiz Page */
+
+/* Quiz Page - NEW DESIGN */
+#quiz-page {
+    max-width: 600px;
+    margin: auto;
+}
+
 .quiz-header {
+    margin-bottom: 1.5rem;
+}
+
+.quiz-header .flex-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
 }
 
-.question-count {
-    font-size: 1.2em;
+.question-count, .timer-text {
+    font-size: 0.875rem;
     font-weight: 600;
 }
 
-.timer {
-    background: var(--primary-color);
-    color: var(--light-text);
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    min-width: 80px;
-    text-align: center;
+#timer-container {
+    width: 100%;
+    background-color: #e2e8f0;
+    border-radius: 9999px;
+    height: 10px;
+}
+
+#timer-bar {
+    background-image: linear-gradient(to right, #4f46e5, #3b82f6);
+    height: 10px;
+    border-radius: 9999px;
+    transition: width 1s linear;
+}
+
+#timer-bar.time-low-pulse {
+    background-image: linear-gradient(to right, #ef4444, #b91c1c);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
 }
 
 .question-card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 30px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    background-color: transparent;
+    border-radius: 1.5rem;
+    box-shadow: none;
+    padding: 0;
+    text-align: center;
+}
+
+.question-text-wrapper {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
 }
 
 .question-text {
-    font-size: 1.4em;
-    margin-bottom: 25px;
-    font-weight: 500;
-    line-height: 1.5;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    font-weight: 600;
+    color: #1a202c;
 }
 
 .options-container {
     display: grid;
-    gap: 15px;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
 .option {
-    padding: 18px;
-    background: #f8f9fa;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
+    background-color: #e2e8f0;
+    color: #334155;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    text-align: left;
+    width: 100%;
+    font-size: 1rem;
+    border: 1px solid transparent;
 }
 
-.option:hover {
-    background: #e9ecef;
-    border-color: var(--accent-color);
+.option:hover:not(.disabled) {
+    background-color: #cbd5e1;
+    transform: translateY(-2px);
 }
 
+/* FIX: Added style for selected option */
 .option.selected {
     background: #dbe4ff;
     border-color: var(--secondary-color);
@@ -688,22 +794,20 @@ body {
 }
 
 .option.correct {
-    background-color: #d4edda;
-    border-color: var(--success);
+    background-color: #d1fae5;
+    color: #065f46;
+    border-color: #34d399;
 }
 
 .option.incorrect {
-    background-color: #f8d7da;
-    border-color: var(--danger);
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-color: #ef4444;
 }
 
-.option .icon {
-    display: none;
-}
-
-.option.correct .icon.fa-check,
-.option.incorrect .icon.fa-times {
-    display: inline-block;
+.option.disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .quiz-controls {
@@ -711,6 +815,7 @@ body {
     justify-content: space-between;
     margin-top: 30px;
 }
+
 
 /* Results Page */
 .results-container {
@@ -798,10 +903,11 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 .share-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .results-actions {
@@ -829,7 +935,7 @@ body {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     cursor: pointer;
 }
 
@@ -849,7 +955,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
 }
 .video-card:hover .video-thumbnail img {
     transform: scale(1.05);
@@ -863,7 +969,7 @@ body {
     font-size: 4em;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
 }
 .video-card:hover .play-icon {
     transform: translate(-50%, -50%) scale(1.1);
@@ -891,7 +997,7 @@ body {
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .video-modal.active {
@@ -933,10 +1039,11 @@ body {
     align-items: center;
     cursor: pointer;
     z-index: 10;
-    transition: background 0.3s;
+    transition: background 0.3s ease;
 }
 .close-modal:hover {
     background: rgba(255, 0, 0, 0.7);
+    transform: rotate(90deg);
 }
 
 /* Chat Page */
@@ -1033,10 +1140,12 @@ body {
     border-radius: 25px;
     border: 1px solid var(--border-color);
     font-size: 1rem;
+    transition: border-color 0.3s ease;
 }
 .chat-input input:focus {
     outline: none;
     border-color: var(--secondary-color);
+    box-shadow: 0 0 8px var(--hover-glow);
 }
 
 .send-btn {
@@ -1051,10 +1160,11 @@ body {
     align-items: center;
     cursor: pointer;
     font-size: 1.2rem;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
 }
 .send-btn:hover {
     background: var(--primary-color);
+    transform: scale(1.1);
 }
 
 /* Dashboard Page */
@@ -1131,6 +1241,12 @@ body {
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .stat-value {
@@ -1203,14 +1319,14 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 50000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .modal.active {
@@ -1224,12 +1340,14 @@ body {
     padding: 30px;
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    transform: scale(0.95);
-    transition: transform 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
 }
 .modal.active .modal-content {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
+    opacity: 1;
 }
 
 .modal-header h3 {
@@ -1373,8 +1491,19 @@ body {
 .content-hidden {
     display: none !important;
 }
+
    </style>
 </head>
+
+ <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <style>
+    .cap-fill { fill: #05359c; }
+    .tassel-fill { fill: #125dff; }
+  </style>
+  <path class="cap-fill" d="M128 172.8l-112-56v44.8l112 56 112-56v-44.8l-112 56z"/>
+  <path class="cap-fill" d="M240 72.8L128 16l-112 56.8 112 56 112-56.8zM32 172.8h192v16H32v-16z"/>
+  <path class="tassel-fill" d="M208 88.8v56h16v-56h-16z"/>
+</svg> -->
     <div id="app">
         <!-- Enhanced Loading Screen -->
         <div id="loading-screen">
@@ -1474,28 +1603,32 @@ body {
                 </div>
             </div>
 
-            <!-- Quiz Page -->
-            <div id="quiz-page" class="page">
-                <div class="quiz-header">
-                    <div class="question-count">Question <span id="current-question">1</span>/<span id="total-questions">10</span></div>
-                    <div class="timer">Time: <span id="time-left">60</span>s</div>
-                </div>
-                
-                <div class="question-card">
-                    <div class="question-text" id="question-text">What is the capital of France?</div>
-                    <div class="options-container" id="options-container">
-                        <div class="option" data-index="0">Paris</div>
-                        <div class="option" data-index="1">London</div>
-                        <div class="option" data-index="2">Berlin</div>
-                        <div class="option" data-index="3">Madrid</div>
-                    </div>
-                </div>
-                
-                <div class="quiz-controls">
-                    <button class="btn btn-secondary" id="prev-question">Previous</button>
-                    <button class="btn" id="next-question">Next</button>
-                </div>
-            </div>
+           <!-- Quiz Page -->
+<div id="quiz-page" class="page">
+    <div class="quiz-header">
+        <div class="flex-container">
+            <div class="question-count">Question <span id="current-question">1</span>/<span id="total-questions">10</span></div>
+            <div class="timer-text">Time: <span id="time-left">35</span>s</div>
+        </div>
+        <div id="timer-container">
+            <div id="timer-bar" style="width: 100%;"></div>
+        </div>
+    </div>
+    
+    <div class="question-card">
+        <div class="question-text-wrapper">
+            <div class="question-text" id="question-text">What is the capital of France?</div>
+        </div>
+        <div class="options-container" id="options-container">
+            <!-- Options will be dynamically inserted here -->
+        </div>
+    </div>
+    
+    <div class="quiz-controls">
+        <button class="btn btn-secondary" id="prev-question">Previous</button>
+        <button class="btn btn-primary" id="next-question">Next</button>
+    </div>
+</div>
 
             <!-- Results Page -->
             <div id="results-page" class="page">
@@ -1732,7 +1865,7 @@ body {
             </div>
         </div>
     </div>
-     <script src="ai-assistant.js"></script>
+     <!-- <script src="ai-assistant.js"></script> -->
  
 
     <script>
@@ -5568,10 +5701,99 @@ function showPage(pageId) {
     }
 }
 
-// Toggle navigation on mobile
-function toggleNav() {
-    elements.sideNav.classList.toggle('active');
+/**
+ * Handles clicks outside the navigation menu to close it.
+ * This function is added as an event listener to the document when the menu opens.
+ * @param {MouseEvent} event - The click event object.
+ */
+function handleClickOutside(event) {
+    // We only proceed if the click was NOT on the side navigation itself (or one of its children)
+    // AND it was NOT on the hamburger menu button that opens it.
+    if (!elements.sideNav.contains(event.target) && !elements.hamMenu.contains(event.target)) {
+        // If the side nav has the 'active' class (meaning it's open),
+        // we call toggleNav() to trigger the closing animation.
+        if (elements.sideNav.classList.contains('active')) {
+            toggleNav();
+        }
+    }
 }
+
+/**
+ * Toggles the mobile navigation menu with GSAP animations.
+ * Handles both opening and closing states.
+ */
+function toggleNav() {
+    const sideNav = elements.sideNav;
+    const isActive = sideNav.classList.contains('active');
+
+    if (isActive) {
+        // --- CLOSE ANIMATION ---
+        // The menu is currently open, so we need to close it.
+
+        // First, we immediately remove the event listener that checks for clicks outside.
+        document.removeEventListener('click', handleClickOutside);
+
+        // Animate the navigation menu off-screen to the left.
+        gsap.to(sideNav, {
+            xPercent: -100, // Move it -100% of its own width on the X-axis.
+            duration: 0.5,
+            ease: "power2.in",
+            onComplete: () => {
+                // After the animation is complete, remove the 'active' class.
+                sideNav.classList.remove('active');
+                
+                // **THE FIX for not opening again**:
+                // We must clear the inline 'transform' style set by GSAP.
+                // This allows our CSS classes to correctly control the menu's position next time.
+                gsap.set(sideNav, { clearProps: "transform" });
+            }
+        });
+    } else {
+        // --- OPEN ANIMATION ---
+        // The menu is closed, so we need to open it.
+
+        // Add the 'active' class to manage the state.
+        sideNav.classList.add('active');
+
+        // Animate the menu in from the left with a bouncy, elastic effect.
+        gsap.from(sideNav, {
+            xPercent: -100, // Animate FROM off-screen left...
+            duration: 0.6,   // ...to its default position (defined in CSS).
+            ease: "elastic.out(1, 0.75)",
+            onComplete: () => {
+                // **THE FIX for clicking outside**:
+                // After the menu has finished opening, we add the event listener to the document
+                // to detect any clicks that happen outside of the menu.
+                document.addEventListener('click', handleClickOutside);
+            }
+        });
+    }
+}
+
+
+// --- INSTRUCTIONS ---
+// In your `setupEventListeners` function, find the code for the navigation links
+// and REPLACE it with the following block. This ensures the menu closes correctly
+// when a link is clicked on mobile.
+
+const navLinks = document.querySelectorAll('.side-nav a[data-page]');
+if (navLinks.length > 0) {
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.getAttribute('data-page');
+            showPage(page);
+            
+            // If the nav menu is currently open, call toggleNav() to close it.
+            // This triggers the proper slide-out animation.
+            if (elements.sideNav.classList.contains('active')) {
+                toggleNav();
+            }
+        });
+    });
+}
+
+
 
 // Handle login form submission
 function handleLogin(e) {
@@ -5698,7 +5920,7 @@ function initHomePage() {
         quizCard.dataset.subject = quiz.subject;
         
         quizCard.innerHTML = `
-            <div class="quiz-image">${quiz.title}</div>
+            <div class="quiz-image"><img src="https://images.pexels.com/photos/1209843/pexels-photo-1209843.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"></img></div>
             <div class="quiz-content">
                 <div class="quiz-title">${quiz.title}</div>
                 <div class="quiz-description">${quiz.description}</div>
@@ -5747,17 +5969,23 @@ function startQuiz(quizId) {
     }
     
     if (!selectedQuiz) return;
+
+    // Animate navigation out based on screen size
+    if (window.innerWidth <= 768) {
+        // Mobile view: slide out hamburger menu to the right
+        gsap.to(".ham", { x: "150%", duration: 0.5, ease: "sine.out" });
+    } else {
+        // Desktop view: slide out side navigation to the left
+        gsap.to(".side-nav", { x: "-100%", duration: 0.5, ease: "sine.out" });
+    }
     
     // Create a copy of the quiz to avoid modifying the original
     const quizCopy = JSON.parse(JSON.stringify(selectedQuiz));
     
     // LIMIT QUESTIONS TO MAXIMUM OF 25
     if (quizCopy.questions.length > 25) {
-        // Randomly select 25 questions from the available pool
         const shuffledQuestions = shuffleArray([...quizCopy.questions]);
         quizCopy.questions = shuffledQuestions.slice(0, 25);
-        
-        // Show a notification to the user
         setTimeout(() => {
             alert(`This quiz has many questions! You'll answer 25 randomly selected questions.`);
         }, 500);
@@ -5768,22 +5996,11 @@ function startQuiz(quizId) {
     
     // Randomize the order of options for each question
     quizCopy.questions.forEach(question => {
-        // Store the original correct answer index
         const originalCorrectIndex = question.correctAnswer;
-        
-        // Create an array of option indices
         const optionIndices = question.options.map((_, index) => index);
-        
-        // Shuffle the option indices
         const shuffledIndices = shuffleArray(optionIndices);
-        
-        // Create new options array in shuffled order
         const newOptions = shuffledIndices.map(index => question.options[index]);
-        
-        // Find the new index of the correct answer
         const newCorrectIndex = shuffledIndices.indexOf(originalCorrectIndex);
-        
-        // Update the question with shuffled options and new correct index
         question.options = newOptions;
         question.correctAnswer = newCorrectIndex;
     });
@@ -5793,7 +6010,6 @@ function startQuiz(quizId) {
     appState.userAnswers = new Array(quizCopy.questions.length).fill(null);
     appState.questionStartTime = new Array(quizCopy.questions.length);
     
-    // Set up quiz page (MOVED OUTSIDE THE IF BLOCK)
     elements.totalQuestions.textContent = quizCopy.questions.length;
     showPage('quiz');
     showQuestion(0);
@@ -5805,24 +6021,48 @@ function startQuiz(quizId) {
     if (appState.timer) clearInterval(appState.timer);
     appState.timer = setInterval(updateTimer, 1000);
     
-    // Record quiz start time for first question
     appState.questionStartTime[0] = Date.now();
 }
-    
-   // Show a specific question
+
+// Corrected: Updates the timer and the visual timer bar.
+function updateTimer() {
+    appState.timeLeft--;
+    elements.timeLeft.textContent = appState.timeLeft;
+
+    const timerBar = document.getElementById('timer-bar');
+    if (timerBar) {
+        // The percentage is correctly calculated based on 60 seconds.
+        const percentage = (appState.timeLeft / 60) * 100;
+        timerBar.style.width = `${percentage}%`;
+
+        if (appState.timeLeft <= 10) {
+            timerBar.classList.add('time-low-pulse');
+        } else {
+            timerBar.classList.remove('time-low-pulse');
+        }
+    }
+
+    if (appState.timeLeft <= 0) {
+        clearInterval(appState.timer);
+        goToNextQuestion();
+    }
+}
+
+// Corrected: Resets the timer bar when a new question is shown.
 function showQuestion(index) {
+    // FIX: This line resets the timer bar to full when a new question is displayed.
+    const timerBar = document.getElementById('timer-bar');
+    if (timerBar) {
+        timerBar.style.width = '100%';
+        timerBar.classList.remove('time-low-pulse');
+    }
+
     const question = appState.currentQuiz.questions[index];
     
-    // Update question counter
     elements.currentQuestion.textContent = index + 1;
-    
-    // Update question text
     elements.questionText.textContent = question.question;
-    
-    // Clear previous options
     elements.optionsContainer.innerHTML = '';
     
-    // Add new options
     question.options.forEach((option, i) => {
         const optionElement = document.createElement('div');
         optionElement.className = 'option';
@@ -5833,48 +6073,26 @@ function showQuestion(index) {
             optionElement.classList.add('selected');
         }
         
-        optionElement.addEventListener('click', () => {
-            selectOption(i);
-        });
-        
+        optionElement.addEventListener('click', () => selectOption(i));
         elements.optionsContainer.appendChild(optionElement);
     });
     
-    // Update navigation buttons
     elements.prevQuestion.disabled = index === 0;
     elements.nextQuestion.textContent = index === appState.currentQuiz.questions.length - 1 ? 'Finish Quiz' : 'Next';
 }
+
 // Select an option
 function selectOption(optionIndex) {
-    // Calculate time taken for this question
     const timeTaken = (Date.now() - appState.questionStartTime[appState.currentQuestion]) / 1000;
-    
-    // Store the answer with timestamp
     appState.userAnswers[appState.currentQuestion] = {
         answer: optionIndex,
         timeTaken: timeTaken
     };
     
-    // Update UI to show selected option
     const options = elements.optionsContainer.querySelectorAll('.option');
     options.forEach((option, i) => {
-        if (i === optionIndex) {
-            option.classList.add('selected');
-        } else {
-            option.classList.remove('selected');
-        }
+        option.classList.toggle('selected', i === optionIndex);
     });
-}
-
-// Update the timer
-function updateTimer() {
-    appState.timeLeft--;
-    elements.timeLeft.textContent = appState.timeLeft;
-    
-    if (appState.timeLeft <= 0) {
-        clearInterval(appState.timer);
-        goToNextQuestion();
-    }
 }
 
 // Go to the previous question
@@ -5883,134 +6101,136 @@ function goToPreviousQuestion() {
         appState.currentQuestion--;
         showQuestion(appState.currentQuestion);
         
-        // Reset timer
+        // Reset and restart timer
         appState.timeLeft = 60;
         elements.timeLeft.textContent = appState.timeLeft;
+        if (appState.timer) clearInterval(appState.timer);
+        appState.timer = setInterval(updateTimer, 1000);
+        appState.questionStartTime[appState.currentQuestion] = Date.now();
     }
 }
 
-// Go to the next question or finish quiz
+// Navigates to the next question or finishes the quiz.
 function goToNextQuestion() {
-    clearInterval(appState.timer);
-    
-    if (appState.currentQuestion < appState.currentQuiz.questions.length - 1) {
+    if (appState.currentQuestion >= appState.currentQuiz.questions.length - 1) {
+        finishQuiz();
+    } else {
         appState.currentQuestion++;
         showQuestion(appState.currentQuestion);
         
-        // Reset timer
+        // Reset and restart the timer for the new question
         appState.timeLeft = 60;
         elements.timeLeft.textContent = appState.timeLeft;
-        
-        // Restart timer
+        if (appState.timer) clearInterval(appState.timer);
         appState.timer = setInterval(updateTimer, 1000);
-    } else {
-        finishQuiz();
+        appState.questionStartTime[appState.currentQuestion] = Date.now();
     }
 }
 
-// Finish the quiz and show results
+
+// Corrected: Finishes the quiz, shows the score, and animates the navigation back in.
 function finishQuiz() {
-    clearInterval(appState.timer);
+    if (appState.timer) clearInterval(appState.timer);
+
+    // FIX: This code now correctly animates the navigation back into view.
+    if (window.innerWidth <= 768) {
+        // Mobile: Bounce in hamburger menu
+        gsap.to(".ham", { x: "0%", duration: 1, ease: "bounce.out", delay: 0.2 });
+    } else {
+        // Desktop: Slide in side navigation
+        gsap.to(".side-nav", { x: "0%", duration: 0.5, ease: "sine4.in", delay: 0.2 });
+    }
     
     const quiz = appState.currentQuiz;
     let score = 0;
     let totalTime = 0;
     let answeredQuestions = 0;
     
-  // Calculate score and performance metrics
-appState.userAnswers.forEach((answer, index) => {
-    if (answer && answer.answer === quiz.questions[index].correctAnswer) {
-        score++;
-    }
-    
-    if (answer && answer.timeTaken) {
-        totalTime += answer.timeTaken;
-        answeredQuestions++;
-    }
-});
+    // Calculate score and performance metrics
+    appState.userAnswers.forEach((answer, index) => {
+        if (answer && answer.answer === quiz.questions[index].correctAnswer) {
+            score++;
+        }
+        if (answer && answer.timeTaken) {
+            totalTime += answer.timeTaken;
+            answeredQuestions++;
+        }
+    });
 
-// Calculate average time per question
-const averageTime = answeredQuestions > 0 ? (totalTime / answeredQuestions).toFixed(1) : 0;
-const accuracy = (score / quiz.questions.length) * 100;
+    const averageTime = answeredQuestions > 0 ? (totalTime / answeredQuestions).toFixed(1) : 0;
+    const accuracy = (score / quiz.questions.length) * 100;
 
-// Update results page
-elements.finalScore.textContent = `${score}/${quiz.questions.length}`;
+    // Update results page
+    elements.finalScore.textContent = `${score}/${quiz.questions.length}`;
+    elements.averageSpeed.textContent = `${averageTime}s`;
+    elements.accuracy.textContent = `${accuracy.toFixed(0)}%`;
 
-// Set performance stats
-elements.averageSpeed.textContent = `${averageTime}s`;
-elements.accuracy.textContent = `${accuracy.toFixed(0)}%`;
-
-// Set performance note based on score and speed
-let performanceNote = '';
-
-if (accuracy >= 80) {
-    if (averageTime < 5) {
-        performanceNote = "Wooaa! How did you answer the questions this fast? I knew you were a shark!";
-    } else if (averageTime < 10) {
-        performanceNote = "You did well, I knew you were a shark!";
-    } else if (averageTime < 20) {
-        performanceNote = "Good job! You balanced speed and accuracy perfectly.";
+    // Set performance note based on score and speed
+    let performanceNote = '';
+    if (accuracy >= 80) {
+        if (averageTime < 5) {
+            performanceNote = "Wooaa! How did you answer the questions this fast? I knew you were a shark!";
+        } else if (averageTime < 10) {
+            performanceNote = "You did well, I knew you were a shark!";
+        } else if (averageTime < 20) {
+            performanceNote = "Good job! You balanced speed and accuracy perfectly.";
+        } else {
+            performanceNote = "Great accuracy! With a bit more practice, you'll be faster too!";
+        }
+    } else if (accuracy >= 60) {
+        if (averageTime < 5) {
+            performanceNote = "You're fast but accuracy matters too. Try to read questions more carefully.";
+        } else if (averageTime < 10) {
+            performanceNote = "Good effort! With a bit more study, you'll master this!";
+        } else if (averageTime < 20) {
+            performanceNote = "You're taking your time to think, which is good. Now focus on improving accuracy.";
+        } else {
+            performanceNote = "I can see the quiz was quite challenging for you but you tried your best.";
+        }
     } else {
-        performanceNote = "Great accuracy! With a bit more practice, you'll be faster too!";
+        if (averageTime < 5) {
+            performanceNote = "You rushed through the questions. Slow down and read carefully next time.";
+        } else if (averageTime < 10) {
+            performanceNote = "Keep practicing! Review the material and try again with more focus.";
+        } else if (averageTime < 20) {
+            performanceNote = "You're putting in the time, now focus on understanding the concepts better.";
+        } else {
+            performanceNote = "I wish you could be faster than this but you did your best. Keep studying!";
+        }
     }
-} else if (accuracy >= 60) {
-    if (averageTime < 5) {
-        performanceNote = "You're fast but accuracy matters too. Try to read questions more carefully.";
-    } else if (averageTime < 10) {
-        performanceNote = "Good effort! With a bit more study, you'll master this!";
-    } else if (averageTime < 20) {
-        performanceNote = "You're taking your time to think, which is good. Now focus on improving accuracy.";
+    elements.performanceNote.textContent = performanceNote;
+
+    // Set score message based on performance
+    const percentage = (score / quiz.questions.length) * 100;
+    if (percentage >= 80) {
+        elements.scoreMessage.textContent = 'Excellent job! You really know your stuff!';
+    } else if (percentage >= 60) {
+        elements.scoreMessage.textContent = 'Good effort! With a bit more study, you\'ll master this!';
     } else {
-        performanceNote = "I can see the quiz was quite challenging for you but you tried your best.";
+        elements.scoreMessage.textContent = 'Keep practicing! Review the material and try again.';
     }
-} else {
-    if (averageTime < 5) {
-        performanceNote = "You rushed through the questions. Slow down and read carefully next time.";
-    } else if (averageTime < 10) {
-        performanceNote = "Keep practicing! Review the material and try again with more focus.";
-    } else if (averageTime < 20) {
-        performanceNote = "You're putting in the time, now focus on understanding the concepts better.";
-    } else {
-        performanceNote = "I wish you could be faster than this but you did your best. Keep studying!";
-    }
-}
 
-elements.performanceNote.textContent = performanceNote;
-
-// Set score message based on performance
-const percentage = (score / quiz.questions.length) * 100;
-if (percentage >= 80) {
-    elements.scoreMessage.textContent = 'Excellent job! You really know your stuff!';
-} else if (percentage >= 60) {
-    elements.scoreMessage.textContent = 'Good effort! With a bit more study, you\'ll master this!';
-} else {
-    elements.scoreMessage.textContent = 'Keep practicing! Review the material and try again.';
-}
-
-// Generate answer review
-elements.answersReview.innerHTML = '';
-quiz.questions.forEach((question, index) => {
-    const userAnswer = appState.userAnswers[index];
-    const isCorrect = userAnswer && userAnswer.answer === question.correctAnswer;
+    // Generate answer review
+    elements.answersReview.innerHTML = '';
+    quiz.questions.forEach((question, index) => {
+        const userAnswer = appState.userAnswers[index];
+        const isCorrect = userAnswer && userAnswer.answer === question.correctAnswer;
+        const reviewItem = document.createElement('div');
+        reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+        let timeInfo = '';
+        if (userAnswer && userAnswer.timeTaken) {
+            timeInfo = `<div class="time-taken">Time: ${userAnswer.timeTaken.toFixed(1)}s</div>`;
+        }
+        reviewItem.innerHTML = `
+            <h4>Question ${index + 1}: ${question.question}</h4>
+            <p>Your answer: ${userAnswer ? question.options[userAnswer.answer] : 'Not answered'}</p>
+            <p>Correct answer: ${question.options[question.correctAnswer]}</p>
+            ${timeInfo}
+            ${!isCorrect ? '<p class="explanation">Review this topic to improve your understanding.</p>' : ''}
+        `;
+        elements.answersReview.appendChild(reviewItem);
+    });
     
-    const reviewItem = document.createElement('div');
-    reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
-    
-    let timeInfo = '';
-    if (userAnswer && userAnswer.timeTaken) {
-        timeInfo = `<div class="time-taken">Time: ${userAnswer.timeTaken}s</div>`;
-    }
-    
-    reviewItem.innerHTML = `
-        <h4>Question ${index + 1}: ${question.question}</h4>
-        <p>Your answer: ${userAnswer ? question.options[userAnswer.answer] : 'Not answered'}</p>
-        <p>Correct answer: ${question.options[question.correctAnswer]}</p>
-        ${timeInfo}
-        ${!isCorrect ? '<p class="explanation">Review this topic to improve your understanding.</p>' : ''}
-    `;
-    
-    elements.answersReview.appendChild(reviewItem);
-});
     // Update user stats if remembered
     if (appState.currentUser && localStorage.getItem('rememberMe') === 'true') {
         updateUserStats('quiz', {
@@ -6778,6 +6998,11 @@ if (elements.logoutBtn) {
 function initVantaBackground() {
     if (typeof VANTA !== 'undefined') {
         try {
+            // Destroy existing effect if any
+            if (window.vantaEffect) {
+                window.vantaEffect.destroy();
+            }
+            
             window.vantaEffect = VANTA.HALO({
                 el: "#vanta-bg",
                 mouseControls: true,
@@ -6793,11 +7018,18 @@ function initVantaBackground() {
             });
         } catch (error) {
             console.error("Error initializing Vanta.js:", error);
+            // Fallback to a simple background gradient
+            document.getElementById('vanta-bg').style.background = 
+                'linear-gradient(135deg, #05359c, #125dff)';
         }
+    } else {
+        // Fallback if Vanta.js fails to load
+        document.getElementById('vanta-bg').style.background = 
+            'linear-gradient(135deg, #05359c, #125dff)';
     }
 }
 
-// Handle window resize
+// Handle window resize - UPDATED
 function handleResize() {
     // Update canvas size
     const canvas = elements.tunnelCanvas;
@@ -6809,6 +7041,26 @@ function handleResize() {
     // Update Vanta.js if it exists
     if (window.vantaEffect) {
         window.vantaEffect.setSize(window.innerWidth, window.innerHeight);
+        window.vantaEffect.resize();
+    }
+    
+    // Additional responsive adjustments for login form
+    if (appState.currentPage === 'login') {
+        const loginForm = document.querySelector('.login');
+        if (window.innerWidth < 480) {
+            loginForm.style.width = '90%';
+            loginForm.style.padding = '25px 20px';
+        } else {
+            loginForm.style.width = '350px';
+            loginForm.style.padding = '40px';
+        }
+    }
+    
+    // Ensure Vanta background covers entire screen
+    const vantaBg = document.getElementById('vanta-bg');
+    if (vantaBg) {
+        vantaBg.style.width = '100%';
+        vantaBg.style.height = '100%';
     }
 }
 
@@ -6848,10 +7100,8 @@ function getAIResponse(message, quizzes) {
     } else {
         return "I'm here to help you with your studies. You can ask me about quizzes, subjects, or study tips!";
     }
-}
+} 
 
     </script>
 </body>
-
 </html>
-

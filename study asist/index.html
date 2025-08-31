@@ -18,6 +18,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.halo.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+     <!-- META TAGS FOR LINK PREVIEWS (Open Graph & Twitter Cards) -->
+    <!-- Open Graph tags for platforms like Facebook, LinkedIn, etc. -->
+    <meta property="og:title" content="Exam Study Assistant for DTI">
+    <meta property="og:description" content="An interactive quiz and study platform designed to help DTI students excel in their exams.">
+    <!-- Corrected: Replace the SVG data URL with a direct link to an image.
+         Social media crawlers need a valid URL to an image file (e.g., .png, .jpg). -->
+    <meta property="og:image" content="https://placehold.co/1200x630/05359c/ffffff?text=Exam+Study+Assistant">
+    <meta property="og:url" content="https://study-assistant-one.vercel.app">
+    <!-- Recommended: Add the type of content, e.g., 'website'. -->
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card tags for Twitter/X -->
+    <!-- Use summary_large_image for a more prominent preview. -->
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- Twitter-specific title and description. You can reuse the Open Graph ones. -->
+    <meta name="twitter:title" content="Exam Study Assistant for DTI">
+    <meta name="twitter:description" content="An interactive quiz and study platform designed to help DTI students excel in their exams.">
+    <!-- The Twitter image should also be a direct URL. -->
+    <meta name="twitter:image" content="https://placehold.co/1200x630/05359c/ffffff?text=Exam+Study+Assistant">
+    <!-- Recommended: Add a site handle for attribution on Twitter. -->
+    <meta name="twitter:site" content="@yourtwitterhandle">
+    <!-- END OF META TAGS -->
+
    <style>
     /* Global Styles */
     
@@ -181,7 +206,7 @@ body {
     overflow: hidden;
 }
 
-.login-container {
+/* .login-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -200,6 +225,30 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
+} */
+
+
+/* Styles for the new Kaleidoscope Background */
+#kaleidoscope-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Keep it in the background */
+    cursor: crosshair;
+}
+
+/* Ensure the login form stays on top */
+.login-container {
+    position: relative;
+    z-index: 2;
+     width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
 .login {
@@ -1492,6 +1541,97 @@ body {
     display: none !important;
 }
 
+/* ADD THESE NEW STYLES FOR THE CHALLENGE FEATURE */
+#challenge-start-page {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 20000;
+    justify-content: center;
+    align-items: center;
+}
+#challenge-start-page.active {
+    display: flex; /* Shown when active */
+}
+
+.challenge-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.challenger-info {
+    margin-bottom: 25px;
+}
+
+.challenger-pfp {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 15px;
+    border: 4px solid var(--secondary-color);
+}
+.challenger-pfp img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.challenger-info h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+.challenger-info p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.challenge-details h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.challenge-details p {
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+#start-challenge-btn {
+    width: 100%;
+    font-size: 1.2rem;
+}
+
+#challenge-result-message {
+    padding: 15px;
+    border-radius: 10px;
+    margin: 0 auto 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: none; /* Hidden by default */
+}
+#challenge-result-message.win {
+    background-color: var(--success);
+    color: var(--light-text);
+}
+#challenge-result-message.loss {
+    background-color: var(--warning);
+    color: var(--text-color);
+}
+/* END OF NEW STYLES */
+
+
+
    </style>
 </head>
 
@@ -1554,34 +1694,34 @@ body {
 
         <!-- Main Content -->
         <div class="main-content" id="main-content">
-            <!-- Login Page -->
-            <div id="login-page" class="page">
-                <div class="login-container">
-                    <div id="vanta-bg"></div>
-                    <div class="login">
-                        <img src="/logo-white-1.png" alt="Lumora Educations">
-                        <form id="login-form">
-                            <div class="input-box">
-                                <input type="text" id="username" placeholder="Enter Your Full Name" required>
-                            </div>
-                            <div class="input-box">
-                                <select id="educationLevel" name="educationLevel" required>
-                                    <option value="">Select your course</option>
-                                    <option value="Multimedia">Multimedia</option>
-                                    <option value="Welding">Welding</option>
-                                    <option value="CAD/CAM">CAD/CAM</option>
-                                    <option value="Entrepreneurship">Entrepreneurship</option>
-                                </select>
-                            </div>
-                            <div class="rembar">
-                                <input type="checkbox" id="rememberMe">
-                                <label for="rememberMe">Remember Me</label>
-                            </div>
-                            <button type="submit">GET STARTED</button>
-                        </form>
-                    </div>
+          <!-- Login Page -->
+<div id="login-page" class="page">
+    <canvas id="kaleidoscope-bg"></canvas>
+    <div class="login-container">
+        <div class="login">
+            <img src="/logo-white-1.png" alt="Lumora Educations">
+            <form id="login-form">
+                <div class="input-box">
+                    <input type="text" id="username" placeholder="Enter Your Full Name" required>
                 </div>
-            </div>
+                <div class="input-box">
+                    <select id="educationLevel" name="educationLevel" required>
+                        <option value="">Select your course</option>
+                        <option value="Multimedia">Multimedia</option>
+                        <option value="Welding">Welding</option>
+                        <option value="CAD/CAM">CAD/CAM</option>
+                        <option value="Entrepreneurship">Entrepreneurship</option>
+                    </select>
+                </div>
+                <div class="rembar">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Remember Me</label>
+                </div>
+                <button type="submit">GET STARTED</button>
+            </form>
+        </div>
+    </div>
+</div>
 
             <!-- Home Page -->
             <div id="home-page" class="page">
@@ -1603,7 +1743,9 @@ body {
                 </div>
             </div>
 
-           <!-- Quiz Page -->
+<!-- 1. Replace the existing HTML for your quiz page with this -->
+<!-- This version removes the 'Next' and 'Previous' buttons -->
+
 <div id="quiz-page" class="page">
     <div class="quiz-header">
         <div class="flex-container">
@@ -1624,10 +1766,7 @@ body {
         </div>
     </div>
     
-    <div class="quiz-controls">
-        <button class="btn btn-secondary" id="prev-question">Previous</button>
-        <button class="btn btn-primary" id="next-question">Next</button>
-    </div>
+    <!-- The quiz-controls div has been removed -->
 </div>
 
             <!-- Results Page -->
@@ -1865,6 +2004,29 @@ body {
             </div>
         </div>
     </div>
+
+            <!-- ADD THIS NEW PAGE FOR THE CHALLENGE PROMPT -->
+        <div id="challenge-start-page" class="page">
+            <div class="challenge-card">
+                <div class="challenger-info">
+                    <div class="challenger-pfp">
+                        <img id="challenger-image" src="" alt="Challenger">
+                    </div>
+                    <h2 id="challenger-name">User</h2>
+                    <p>has challenged you!</p>
+                </div>
+                <div class="challenge-details">
+                    <h3>Score to Beat: <span id="challenge-score">0/0</span></h3>
+                    <p>Their Average Speed: <span id="challenge-speed">0s</span></p>
+                </div>
+                <button id="start-challenge-btn" class="btn btn-primary">Start Challenge</button>
+            </div>
+        </div>
+
+        <!-- ADD THIS DIV FOR CHALLENGE RESULTS -->
+<div id="challenge-result-message"></div>
+<!-- END OF ADDED DIV -->
+        <!-- END OF NEW PAGE -->
      <!-- <script src="ai-assistant.js"></script> -->
  
 
@@ -1875,6 +2037,11 @@ const appState = {
     currentPage: 'login',
     currentUser: null,
     currentQuiz: null,
+     // ADDED THESE NEW STATE PROPERTIES
+    challengeInfo: null,
+    isChallengeMode: false,
+    questionOrder: [], 
+    // END OF ADDITIONS
     currentQuestion: 0,
     userAnswers: [],
     questionStartTime: [],
@@ -2276,366 +2443,6 @@ const appState = {
         {
             question: 'What should you do if your CV is rejected?',
             options: ['Give up.', 'Send an angry email to the recruiter.', 'Review your CV for any of the common mistakes listed in the document.', 'Apply for the same job again.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is the primary role of a cover letter?',
-            options: ['To supplement your CV and provide a personal introduction.', 'To replace your CV.', 'To serve as a reference letter.', 'To provide a list of your hobbies.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'What is a mistake related to the "contact" section of a CV?',
-            options: ['Including a professional phone number.', 'Including a professional email address.', 'Using a vague email address like "mail@gmail.com".', 'Not including your phone number.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What does it mean to have a "well-structured" CV?',
-            options: ['It is a single paragraph.', 'It has clear sections with headings and bullet points.', 'It is only one page long.', 'It is printed on high-quality paper.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the purpose of the "skills" section in a CV?',
-            options: ['To show what you are good at and how it can benefit the company.', 'To list every skill you have ever had.', 'To list only your technical skills.', 'To list only your soft skills.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'Which of these is a mistake to avoid in a CV?',
-            options: ['Sending it in a PDF format.', 'Including a photo of yourself.', 'Using a clean and simple layout.', 'Using bullet points to list achievements.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Why should you use a professional font like Times New Roman or Arial for your CV?',
-            options: ['They are easy for recruiters to read and scan.', 'They are the only fonts that are allowed.', 'They are more expensive.', 'They are more creative.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'What should you do if your CV is "just a list of duties"?',
-            options: ['Add more duties.', 'Re-write it to focus on achievements and results.', 'Make it longer.', 'Make it shorter.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What does the term "Curriculum Vitae" literally mean?',
-            options: ['Course of Life', 'List of Accomplishments', 'My Career', 'Professional Summary'],
-            correctAnswer: 0
-        },
-        {
-            question: 'What is the key purpose of a CV?',
-            options: ['To provide a legal document of your employment history.', 'To list every job you have ever held.', 'To market your skills and qualifications to a potential employer.', 'To showcase your artistic abilities.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Which of the following is considered a "soft skill"?',
-            options: ['Proficiency in Python programming', 'Financial accounting', 'Teamwork', 'Graphic design'],
-            correctAnswer: 2
-        },
-        {
-            question: 'When writing your CV, it is most effective to:',
-            options: ['List all your daily duties in detail.', 'Focus on quantifiable achievements.', 'Write a long paragraph about your responsibilities.', 'Use bullet points only for your educational background.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the biggest mistake you can make on your CV?',
-            options: ['Not including your hobbies.', 'Using an unconventional email address.', 'Spelling and grammatical errors.', 'Having too many pages.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Which of these should be avoided in your CV?',
-            options: ['A clean, simple layout', 'Relevant work experience', 'Political or religious views', 'A professional summary'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is the main purpose of a "chronological CV"?',
-            options: ['To show how your skills have developed over time.', 'To highlight skills over work history.', 'To focus on your most recent achievements.', 'To list your employment in a random order.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'The best way to save and send a CV is typically as a:',
-            options: ['JPEG file', 'Word document', 'PDF file', 'Zipped folder'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What should be the tone of your cover letter?',
-            options: ['Casual and informal', 'Formal and professional', 'Aggressive and demanding', 'Overly emotional'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the purpose of the concluding paragraph in a cover letter?',
-            options: ['To summarize your entire CV.', 'To reiterate your interest and call to action for an interview.', 'To ask about salary and benefits.', 'To provide a list of your references.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Why should a candidate call the contact person before starting an application?',
-            options: ['To demand an immediate interview.', 'To ask a list of prepared questions about the vacancy and company.', 'To inform them you are about to apply.', 'To get the person\'s home address.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Which of these details is generally considered optional on a CV?',
-            options: ['Full name', 'Phone number', 'Date of birth', 'Email address'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What should be included in the header of a cover letter?',
-            options: ['Your name and contact details', 'Your social security number', 'Your full address and date of birth', 'Your full salary history'],
-            correctAnswer: 0
-        },
-        {
-            question: 'Why is it important to tailor a cover letter to each specific job?',
-            options: ['Because it is a legal requirement.', 'To save time.', 'To show the employer you understand and are a good fit for their specific needs.', 'To make it longer.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is a "functional CV"?',
-            options: ['A CV that lists work history first.', 'A CV that organizes information by skills rather than chronology.', 'A CV that is only used for academic jobs.', 'A CV that is at least two pages long.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is a key difference between a CV and a resume?',
-            options: ['A CV is typically shorter and less detailed.', 'A CV is used primarily in the US and Canada.', 'A CV is more comprehensive and detailed, covering more information.', 'A resume is used for academic positions.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Why should you avoid using a photo on your CV unless specifically asked for?',
-            options: ['It can take up too much space.', 'It can lead to unconscious bias or discrimination.', 'It is unprofessional.', 'It makes the CV look too modern.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Which of the following is a "hard skill"?',
-            options: ['Leadership', 'Communication', 'Data analysis', 'Problem-solving'],
-            correctAnswer: 2
-        },
-        {
-            question: 'The purpose of a "summary" on a CV is to:',
-            options: ['List your most significant achievements and skills at a glance.', 'Summarize your educational history.', 'List every job you have ever had.', 'Explain your hobbies and interests.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'What is a "powerful action word"?',
-            options: ['A verb that describes a task you performed.', 'A word that shows what you did and the impact you had.', 'A word that describes your personality.', 'A word that has many syllables.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the benefit of a "functional CV" for someone with employment gaps?',
-            options: ['It hides the gaps by not focusing on the dates of employment.', 'It makes the CV shorter.', 'It is more formal.', 'It is required for all jobs with gaps.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'Why should you avoid using jargon on your CV?',
-            options: ['It makes you sound too professional.', 'It can be confusing to a recruiter who is not in your field.', 'It makes the CV look outdated.', 'It is only used in academic contexts.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the primary reason to use a professional email address for job applications?',
-            options: ['It is a legal requirement.', 'It is easier to remember.', 'It projects a professional image.', 'It is the only type of email address accepted.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'According to the document, when should you provide references?',
-            options: ['Only if the job advertisement specifically asks for them.', 'Always, to be prepared.', 'Never, it is a waste of space.', 'Only for senior-level jobs.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'What should you do if your CV is "just a list of duties"?',
-            options: ['Make it longer to include more duties.', 'Rewrite it to highlight achievements and quantifiable results.', 'Use a different font.', 'Include more hobbies to make it more interesting.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is a common reason for a CV to be rejected?',
-            options: ['Too many achievements listed.', 'A clean and simple layout.', 'Inconsistent formatting.', 'Having an online portfolio.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'When should a new graduate use an "objective statement" on their CV?',
-            options: ['Never, it is outdated.', 'To state their professional goals and career aspirations.', 'To list all their past work experience.', 'To explain why they need a job.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'The "Education" section on a CV should be listed in what order?',
-            options: ['Alphabetical order by institution.', 'Most recent to oldest.', 'Oldest to most recent.', 'By the number of years you attended.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Which of these is a valid reason to include a "Hobbies and Interests" section?',
-            options: ['To list every hobby you have.', 'To demonstrate skills like teamwork or leadership.', 'To show that you are an interesting person.', 'To fill up empty space on the CV.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What should a candidate do if their CV has more than two pages?',
-            options: ['Submit it as is.', 'Reduce the font size to fit it all on two pages.', 'Reduce the content by focusing on the most relevant information.', 'Add more pages to include every detail.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Why is it a bad idea to use an unprofessional voicemail message?',
-            options: ['It can be difficult to understand.', 'It creates a poor first impression.', 'It makes you seem too casual.', 'It is a form of discrimination.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What does "tailoring a cover letter" mean?',
-            options: ['Making the cover letter shorter.', 'Writing a new, generic cover letter for every job.', 'Adjusting the letter to specifically fit the job and company you are applying for.', 'Using the same font as the company\'s logo.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Why should you avoid using the phrase "Duties include..."?',
-            options: ['It is unprofessional.', 'It is too long.', 'It focuses on tasks rather than achievements and impact.', 'It is not grammatically correct.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Which of the following is an example of an "achievement"?',
-            options: ['Assisted customers.', 'Attended team meetings.', 'Organized office supplies.', 'Improved process efficiency by 20%.'],
-            correctAnswer: 3
-        },
-        {
-            question: 'What is a reason for a recruiter to reject a CV immediately?',
-            options: ['It is more than one page long.', 'It has a typo in the contact information.', 'It includes a professional summary.', 'It is sent as a PDF.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the purpose of a "professional summary"?',
-            options: ['To list all your previous employers.', 'To provide a snapshot of your career and skills.', 'To explain why you left your last job.', 'To list your salary expectations.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is a common mistake when listing skills?',
-            options: ['Grouping them by category.', 'Using bullet points.', 'Listing them in alphabetical order.', 'Listing a skill you don\'t actually possess.'],
-            correctAnswer: 3
-        },
-        {
-            question: 'What should be the length of a cover letter?',
-            options: ['More than one page.', 'One page.', 'Half a page.', 'There is no length requirement.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Why is it a mistake to use a resume template that has been overused?',
-            options: ['It is too difficult to edit.', 'It does not stand out to a recruiter.', 'It is not legally compliant.', 'It is too short.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the correct format for listing dates in a CV?',
-            options: ['Only the year.', 'Only the month and year.', 'Month, year, and day.', 'There is no correct format.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is a reason to avoid using a photo on your CV?',
-            options: ['It is a waste of space.', 'It can lead to unconscious bias or discrimination.', 'It is considered old-fashioned.', 'It makes the CV too heavy to send.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the purpose of using a clean and simple layout for a CV?',
-            options: ['To make it look like everyone else\'s.', 'To show you are not creative.', 'To make it easy for a recruiter to quickly scan.', 'To save money on printing.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Why should you use an "achievement" rather than a "duty" to describe your work experience?',
-            options: ['It shows the impact you had on the company.', 'It is easier to write.', 'It makes the CV shorter.', 'It is a legal requirement.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'Which of these is a common mistake on a CV?',
-            options: ['Listing relevant work experience.', 'Using bullet points.', 'Leaving unexplained gaps in employment.', 'Using a professional font.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is a "chronological CV"?',
-            options: ['A CV that lists all your skills first.', 'A CV that lists jobs in reverse chronological order.', 'A CV that focuses on your abilities.', 'A CV that is used only for academic positions.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What should the concluding paragraph of a cover letter include?',
-            options: ['A summary of your work experience.', 'A list of your references.', 'Your salary expectations.', 'A polite request to discuss your suitability in an interview.'],
-            correctAnswer: 3
-        },
-        {
-            question: 'When should a job seeker call the company\'s contact person?',
-            options: ['Only after being offered an interview.', 'Before submitting their application.', 'Never, it is unprofessional.', 'Only if they have a personal connection.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the purpose of listing hobbies that demonstrate skills like "communication" and "teamwork"?',
-            options: ['To show you are a well-rounded person.', 'To fill up space on the CV.', 'To showcase relevant soft skills.', 'To show you have a social life.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Why should you avoid using different fonts and colors in your CV?',
-            options: ['It makes the CV look messy.', 'It is against company policy.', 'It is too creative.', 'It is difficult to send electronically.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'What is the key to creating a stand-out CV?',
-            options: ['Using a generic template.', 'Including a personal photo.', 'Highlighting achievements and skills relevant to the job.', 'Making it as long as possible.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is the benefit of a "summary" section for an experienced professional?',
-            options: ['It allows a recruiter to quickly understand their career trajectory and value.', 'It is only used for career changers.', 'It is a place to list personal interests.', 'It is a way to make the CV longer.'],
-            correctAnswer: 0
-        },
-        {
-            question: 'Which of the following is a common mistake on a cover letter?',
-            options: ['Addressing it to a specific person.', 'Not mentioning the specific job you are applying for.', 'Using a professional font.', 'Keeping it to one page.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Why should you avoid using an unprofessional email address?',
-            options: ['It is not secure.', 'It can lead to your email being sent to spam.', 'It reflects poorly on your professionalism.', 'It is a legal requirement.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is the purpose of the "contact information" section on a CV?',
-            options: ['To provide a photo of yourself.', 'To list your name, phone number, and professional email.', 'To provide your full mailing address.', 'To list your social media accounts.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What does "tailoring your CV" mean?',
-            options: ['Making your CV fit on a single page.', 'Using the same font throughout.', 'Adjusting the content to match a specific job description.', 'Sending it as a PDF.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is a major difference between a "duty" and an "achievement"?',
-            options: ['An achievement is a task, a duty is a result.', 'An achievement is a result, a duty is a task.', 'A duty is a hard skill, an achievement is a soft skill.', 'There is no difference.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Why is it important to use consistent formatting on a CV?',
-            options: ['To make the CV shorter.', 'To show attention to detail and professionalism.', 'To make it look exactly like everyone else\'s.', 'To save time.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is a reason a recruiter might reject a CV immediately?',
-            options: ['It has a photo.', 'It has a professional summary.', 'It contains spelling and grammatical errors.', 'It is a functional CV.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is a key element of a successful cover letter?',
-            options: ['A detailed summary of every job you have had.', 'A compelling narrative that explains your suitability for the role.', 'A list of your salary requirements.', 'A list of your personal references.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is a common mistake when listing education history on a CV?',
-            options: ['Listing in reverse chronological order.', 'Not including dates of attendance.', 'Listing the name of the institution.', 'Listing the qualification.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What is the purpose of an "objective statement" on a CV?',
-            options: ['To list all your personal interests.', 'To briefly introduce yourself and your career goals.', 'To list all your past jobs.', 'To list all the skills you have.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'Which of the following should be avoided on a CV?',
-            options: ['Achievements', 'Hard skills', 'Unexplained employment gaps', 'Work history'],
-            correctAnswer: 2
-        },
-        {
-            question: 'What is a "functional CV"?',
-            options: ['A CV that is organized by work history.', 'A CV that highlights skills and abilities over work history.', 'A CV that is used only for IT jobs.', 'A CV that has no dates on it.'],
-            correctAnswer: 1
-        },
-        {
-            question: 'What should be the focus of your "Work Experience" section?',
-            options: ['A list of all your duties at each job.', 'A list of all the software you used.', 'A list of your key accomplishments and achievements.', 'A list of your job titles and dates only.'],
-            correctAnswer: 2
-        },
-        {
-            question: 'Why is it a mistake to have an unprofessional voicemail message?',
-            options: ['It does not have a professional ringtone.', 'It is difficult to understand.', 'It can make you seem unprofessional to a potential employer.', 'It takes too long to get to.'],
             correctAnswer: 2
         },
         {
@@ -5319,7 +5126,7 @@ const appState = {
             youtubeId: 'i5mYphUoOCs'
         }
     ],
-    motivationMessages: [
+       motivationMessages: [
         "Lumora Educations has got your back!",
         "Knowledge is power. Keep learning!",
         "Every expert was once a beginner.",
@@ -5331,16 +5138,23 @@ const appState = {
         "Are you ready to pass the quiz today?",
         "Challenge yourself to grow every day."
     ],
-    tunnelAnimation: null
+    activeAnimation: null // To keep track of the current animation frame
 };
 
 // DOM Elements
 const elements = {
     loadingScreen: document.getElementById('loading-screen'),
-    tunnelCanvas: document.getElementById('tunnel-canvas'),
     sideNav: document.getElementById('side-nav'),
     hamMenu: document.getElementById('ham-menu'),
     mainContent: document.getElementById('main-content'),
+        // ADD THESE NEW ELEMENTS
+    challengeResultMessage: document.getElementById('challenge-result-message'),
+    challengerImage: document.getElementById('challenger-image'),
+    challengerName: document.getElementById('challenger-name'),
+    challengeScore: document.getElementById('challenge-score'),
+    challengeSpeed: document.getElementById('challenge-speed'),
+    startChallengeBtn: document.getElementById('start-challenge-btn'),
+    // END OF ADDITIONS
     pages: {
         login: document.getElementById('login-page'),
         home: document.getElementById('home-page'),
@@ -5348,9 +5162,10 @@ const elements = {
         results: document.getElementById('results-page'),
         study: document.getElementById('study-page'),
         chat: document.getElementById('chat-page'),
-        dashboard: document.getElementById('dashboard-page')
+        dashboard: document.getElementById('dashboard-page'),
+          // ADD THIS NEW PAGE ELEMENT
+        challenge: document.getElementById('challenge-start-page') 
     },
-    
     loginForm: document.getElementById('login-form'),
     usernameInput: document.getElementById('username'),
     educationSelect: document.getElementById('educationLevel'),
@@ -5370,8 +5185,6 @@ const elements = {
     timeLeft: document.getElementById('time-left'),
     questionText: document.getElementById('question-text'),
     optionsContainer: document.getElementById('options-container'),
-    prevQuestion: document.getElementById('prev-question'),
-    nextQuestion: document.getElementById('next-question'),
     finalScore: document.getElementById('final-score'),
     scoreMessage: document.getElementById('score-message'),
     averageSpeed: document.getElementById('average-speed'),
@@ -5408,155 +5221,166 @@ const elements = {
     noStorageOk: document.getElementById('no-storage-ok')
 };
 
-window.addEventListener('resize', handleResize);
+// --- NEW ANIMATION & LOGIN LOGIC STARTS HERE ---
 
-// Initialize the application
-function initApp() {
-    console.log("Initializing app...");
-    
-    // Check if user data exists in localStorage
-    const userData = localStorage.getItem('userData');
-    const rememberMe = localStorage.getItem('rememberMe');
-    const lastLogin = localStorage.getItem('lastLogin');
-    
-    // Check if data should be cleared (after 14 days)
-    if (userData && lastLogin) {
-        const lastLoginDate = new Date(lastLogin);
-        const currentDate = new Date();
-        const daysSinceLastLogin = Math.floor((currentDate - lastLoginDate) / (1000 * 60 * 60 * 24));
-        
-        if (daysSinceLastLogin >= 14) {
-            localStorage.removeItem('userData');
-            localStorage.removeItem('profileImage');
-            localStorage.removeItem('lastLogin');
-            localStorage.removeItem('rememberMe');
-            // Reset the variable since we removed the data
-            userData = null;
-        }
+/**
+ * REPLACED: Creates the new educational-themed loading animation from your reference code.
+ */
+const initEducationAnimation = () => {
+    if (appState.activeAnimation) cancelAnimationFrame(appState.activeAnimation);
+    const canvas = document.createElement('canvas');
+    canvas.id = 'education-canvas';
+    elements.loadingScreen.prepend(canvas);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 1, 35);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    camera.position.z = 20;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0x00ffff, 1.2);
+    pointLight.position.set(0, 0, 15);
+    scene.add(pointLight);
+
+    const objects = [];
+    const createBook = () => {
+        const book = new THREE.Group();
+        const cover = new THREE.Mesh(new THREE.BoxGeometry(1, 1.4, 0.1), new THREE.MeshStandardMaterial({ color: 0x0077b6 }));
+        const pages = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.3, 0.08), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+        pages.position.x = 0.05;
+        book.add(cover, pages);
+        return book;
+    };
+    const createPencil = () => {
+        const pencil = new THREE.Group();
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1.5, 8), new THREE.MeshStandardMaterial({ color: 0xffd700 }));
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.3, 8), new THREE.MeshStandardMaterial({ color: 0x2f2f2f }));
+        tip.position.y = 0.9;
+        pencil.add(body, tip);
+        return pencil;
+    };
+    const createGradCap = () => {
+        const cap = new THREE.Group();
+        const board = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 1.5), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.4, 0.5, 16), new THREE.MeshStandardMaterial({ color: 0x1a1a1a }));
+        board.position.y = 0.25;
+        cap.add(board, base);
+        return cap;
+    };
+    const createLightbulb = () => {
+        const bulb = new THREE.Group();
+        const glass = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), new THREE.MeshStandardMaterial({ color: 0xffff00, emissive: 0xffff00, transparent: true, opacity: 0.6 }));
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.3, 16), new THREE.MeshStandardMaterial({ color: 0x808080 }));
+        base.position.y = -0.5;
+        bulb.add(glass, base);
+        return bulb;
+    };
+
+    const objectTypes = [createBook, createPencil, createGradCap, createLightbulb];
+
+    for (let i = 0; i < 150; i++) {
+        const obj = objectTypes[Math.floor(Math.random() * objectTypes.length)]();
+        obj.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
+        obj.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
+        const scale = Math.random() * 0.5 + 0.5;
+        obj.scale.set(scale, scale, scale);
+        scene.add(obj);
+        objects.push(obj);
     }
-    
-    // Show appropriate loading screen based on authentication status
-    if (userData && rememberMe === 'true') {
-        showMotivationalLoadingScreen();
-    } else {
-        showDefaultLoadingScreen();
-    }
-    
-    // Set up event listeners
-    setupEventListeners();
-    
-    // Initialize Vanta.js background for login page
-    initVantaBackground();
-    
-    // Show appropriate page based on authentication status after loading animation
-    setTimeout(() => {
-        console.log("Loading complete, showing appropriate page...");
-        
-        // Hide loading screen with a fade effect
-        gsap.to(elements.loadingScreen, {
-            opacity: 0,
-            duration: 0.5,
-            onComplete: () => {
-                elements.loadingScreen.style.display = 'none';
-                
-                if (userData && rememberMe === 'true') {
-                    try {
-                        appState.currentUser = JSON.parse(userData);
-                        updateUserStats('visit');
-                        updateUserInterface();
-                        showPage('home');
-                    } catch (e) {
-                        console.error("Error parsing user data:", e);
-                        showPage('login');
-                    }
-                } else {
-                    showPage('login');
-                }
-            }
+
+    const animate = () => {
+        appState.activeAnimation = requestAnimationFrame(animate);
+        objects.forEach(obj => {
+            obj.rotation.x += 0.005;
+            obj.rotation.y += 0.005;
         });
-    }, 4000);
-}
-
-// Initialize Three.js tunnel animation (SIMPLIFIED VERSION)
-function initTunnelAnimation() {
-    try {
-        const canvas = elements.tunnelCanvas;
-        if (!canvas) {
-            console.error("Tunnel canvas not found");
-            return;
-        }
-        
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        const stars = [];
-        const starCount = 100;
-        
-        // Create stars
-        for (let i = 0; i < starCount; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 3 + 1,
-                speed: Math.random() * 2 + 0.5
-            });
-        }
-        
-        // Animation function
-        function animate() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#ffffff';
-            stars.forEach(star => {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Move stars
-                star.y += star.speed;
-                
-                // Reset stars that go off screen
-                if (star.y > canvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * canvas.width;
-                }
-            });
-            
-            appState.tunnelAnimation = requestAnimationFrame(animate);
-        }
-        
-        animate();
-    } catch (error) {
-        console.error("Error initializing tunnel animation:", error);
-    }
-}
-
-// Show motivational loading screen for returning users
-function showMotivationalLoadingScreen() {
-    const randomMessage = appState.motivationMessages[
-        Math.floor(Math.random() * appState.motivationMessages.length)
-    ];
+        renderer.render(scene, camera);
+    };
+    animate();
     
+    return { camera, objects, renderer };
+};
+
+
+/**
+ * CORRECTED: Creates an immersive, digital grid loading screen for returning users with improved visibility.
+ */
+function initMotivationalScreen() {
+    // 1. Set up the HTML structure with new styles for visibility
     elements.loadingScreen.innerHTML = `
-        <canvas id="tunnel-canvas"></canvas>
-        <div class="text-container absolute">
-            <h1 class="text-4xl md:text-6xl font-black tracking-wider uppercase">Welcome Back!</h1>
-            <p class="text-lg md:text-xl font-light mt-2 text-gray-300">${randomMessage}</p>
+        <canvas id="motivational-canvas"></canvas>
+        <div id="quote-container" class="text-container absolute" style="opacity: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
+            <p id="quote-text" class="text-2xl md:text-4xl font-light text-center" 
+               style="color: #ffffff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 8px rgba(0, 255, 255, 0.7); max-width: 800px;"></p>
         </div>
     `;
+    elements.loadingScreen.style.backgroundColor = '#000';
+    elements.loadingScreen.style.display = 'flex';
+
+
+    // 2. Set up the Canvas animation
+    const canvas = document.getElementById('motivational-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const cols = Math.floor(canvas.width / 20) + 1;
+    const ypos = Array(cols).fill(0);
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    function matrixAnimation() {
+        // Dim the background by making the fade effect stronger
+        ctx.fillStyle = 'rgba(0,0,0,.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Use a dimmer color for the falling characters
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.4)'; // Dimmer cyan
+        ctx.font = '15pt monospace';
+
+        ypos.forEach((y, ind) => {
+            const text = String.fromCharCode(Math.random() * 128);
+            const x = ind * 20;
+            ctx.fillText(text, x, y);
+            if (y > 100 + Math.random() * 10000) {
+                ypos[ind] = 0;
+            } else {
+                ypos[ind] = y + 20;
+            }
+        });
+    }
     
-    // Update the tunnel canvas reference
-    elements.tunnelCanvas = document.getElementById('tunnel-canvas');
-    // Reinitialize the tunnel animation
-    initTunnelAnimation();
+    // Store the interval ID in the appState to be cleared later
+    appState.activeAnimation = setInterval(matrixAnimation, 50);
+
+    // 3. Animate the quote text
+    const quoteElement = document.getElementById('quote-text');
+    const randomMessage = appState.motivationMessages[Math.floor(Math.random() * appState.motivationMessages.length)];
+    let i = 0;
+    
+    function typeQuote() {
+        if (i < randomMessage.length) {
+            quoteElement.innerHTML += randomMessage.charAt(i);
+            i++;
+            setTimeout(typeQuote, 50); // Adjust typing speed here (in ms)
+        }
+    }
+    
+    typeQuote();
 }
 
-// Show default loading screen for new users
-function showDefaultLoadingScreen() {
+
+/**
+ * FIXED: Shows default loading screen for new users and integrates the new animation.
+ */
+const showDefaultLoadingScreen = () => {
     elements.loadingScreen.innerHTML = `
-        <canvas id="tunnel-canvas"></canvas>
         <div id="text-1" class="text-container absolute">
             <h1 class="text-4xl md:text-6xl font-black tracking-wider uppercase">Exam Study Assistant</h1>
             <p class="text-lg md:text-xl font-light mt-2 text-gray-300">Powered by Lumora Educations</p>
@@ -5565,21 +5389,132 @@ function showDefaultLoadingScreen() {
             <h2 class="men text-2xl md:text-4xl font-bold text-cyan-300 tracking-wide">Special Edition for DTI Learners</h2>
         </div>
     `;
-    
-    // Update the tunnel canvas reference
-    elements.tunnelCanvas = document.getElementById('tunnel-canvas');
-    // Reinitialize the tunnel animation
-    initTunnelAnimation();
-    
-    // GSAP Timeline for text animations
+    const { camera, objects } = initEducationAnimation();
+
     const tl = gsap.timeline();
+    const totalDuration = 5.5;
+
+    tl.to(camera.position, { z: -10, duration: totalDuration, ease: "power1.inOut" });
+    tl.fromTo("#text-1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.5)
+      .to("#text-1", { opacity: 0, y: -20, duration: 0.8, ease: "power2.in" }, 2.3)
+      .fromTo("#text-2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 2.9)
+      .to("#text-2", { opacity: 0, y: -20, duration: 0.8, ease: "power2.in" }, 4.7);
+
+    objects.forEach(obj => {
+        tl.to(obj.position, { x: 0, y: 0, z: camera.position.z + 5, duration: 0.8, ease: "power2.in" }, totalDuration - 1);
+        tl.to(obj.scale, { x: 0.01, y: 0.01, z: 0.01, duration: 0.8, ease: "power2.in" }, totalDuration - 1);
+    });
+};
+
+ 
+
+/**
+ * UPDATED: Initializes the application, calling the new motivational screen.
+ */
+const initApp = () => {
     
-    // Sequence the text animations with slide-in effect
-    tl.fromTo("#text-1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.2)
-      .to("#text-1", { opacity: 0, y: -20, duration: 0.8, ease: "power2.in" }, 1.8)
-      .fromTo("#text-2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 2.4)
-      .to("#text-2", { opacity: 0, y: -20, duration: 0.8, ease: "power2.in" }, 3.8);
+    console.log("Initializing app with updated logic...");
+
+     // ADD THIS FUNCTION CALL AT THE START
+    updateMetaTags();
+    // END OF ADDITION
+
+    const lastLogin = localStorage.getItem('lastLogin');
+    if (lastLogin) {
+        const daysSinceLastLogin = (new Date() - new Date(lastLogin)) / (1000 * 60 * 60 * 24);
+        if (daysSinceLastLogin >= 14) {
+            console.log("User data expired. Clearing localStorage.");
+            localStorage.clear();
+        }
+    }
+
+    const userData = localStorage.getItem('userData');
+    const rememberMe = localStorage.getItem('rememberMe');
+
+    if (userData && rememberMe === 'true') {
+        initMotivationalScreen(); // <-- Use the new function
+    } else {
+        showDefaultLoadingScreen();
+    }
+    
+    setupEventListeners();
+    initKaleidoscopeBackground();
+    
+    // Set timeout to 2.5 seconds for both loading screens
+    const loadingDuration = (userData && rememberMe === 'true') ? 2500 : 5500;
+
+    setTimeout(() => {
+        gsap.to(elements.loadingScreen, {
+            opacity: 0,
+            duration: 0.5,
+            onComplete: () => {
+                elements.loadingScreen.style.display = 'none';
+                if (appState.activeAnimation) clearInterval(appState.activeAnimation); // Clear the new interval
+               
+                // ADD THIS LOGIC BLOCK
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('challenge')) {
+                    appState.challengeInfo = {
+                        name: urlParams.get('challenge'),
+                        quizId: urlParams.get('quiz'),
+                        score: urlParams.get('score'),
+                        speed: urlParams.get('speed'),
+                        pfp: urlParams.get('pfp'),
+                        qOrder: urlParams.get('qOrder')?.split(',').map(Number)
+                    };
+                }
+                // END OF LOGIC BLOCK
+
+                if (userData && rememberMe === 'true') {
+                    try {
+                        appState.currentUser = JSON.parse(userData);
+                        updateUserStats('visit');
+                        updateUserInterface();
+                        // MODIFY THIS LINE
+                        if (appState.challengeInfo) {
+                            showChallengePrompt();
+                        } else {
+                            showPage('home');
+                        }
+                    } catch (e) {
+                        showPage('login');
+                    }
+                } else {
+                    showPage('login');
+                }
+            }
+        });
+    }, loadingDuration);
+};
+
+// --- ADD THE FOLLOWING NEW FUNCTIONS AFTER initApp() ---
+
+/**
+ * NEW: Updates meta tags for link previews based on URL parameters.
+ */
+function updateMetaTags() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const titleTag = document.querySelector('meta[property="og:title"]');
+    const descTag = document.querySelector('meta[property="og:description"]');
+    const imageTag = document.querySelector('meta[property="og:image"]');
+
+    if (urlParams.has('challenge')) {
+        const name = urlParams.get('challenge');
+        const score = urlParams.get('score');
+        const speed = urlParams.get('speed');
+        const pfp = urlParams.get('pfp');
+        
+        titleTag.content = `${name} has challenged you!`;
+        descTag.content = `I scored ${score} with an average speed of ${speed}s. Can you beat my score?`;
+        if (pfp) imageTag.content = pfp;
+
+    } else {
+        // Default tags are already in the HTML, but you can set them here too if needed.
+        titleTag.content = "Exam Study Assistant for DTI";
+        descTag.content = "An interactive quiz and study platform designed to help DTI students excel in their exams.";
+    }
 }
+
 
 // Set up all event listeners
 function setupEventListeners() {
@@ -5622,9 +5557,9 @@ function setupEventListeners() {
     }
     
     // Quiz controls
-    if (elements.prevQuestion) elements.prevQuestion.addEventListener('click', goToPreviousQuestion);
+    /*if (elements.prevQuestion) elements.prevQuestion.addEventListener('click', goToPreviousQuestion);
     if (elements.nextQuestion) elements.nextQuestion.addEventListener('click', goToNextQuestion);
-    
+    */
     // Results actions
     if (elements.retryQuiz) elements.retryQuiz.addEventListener('click', retryQuiz);
     if (elements.studyMore) elements.studyMore.addEventListener('click', () => showPage('study'));
@@ -5771,6 +5706,7 @@ function toggleNav() {
 }
 
 
+
 // --- INSTRUCTIONS ---
 // In your `setupEventListeners` function, find the code for the navigation links
 // and REPLACE it with the following block. This ensures the menu closes correctly
@@ -5796,78 +5732,77 @@ if (navLinks.length > 0) {
 
 
 // Handle login form submission
-function handleLogin(e) {
+/**
+ * UPDATED: Handles login, checks for existing data, or creates a new user.
+ */
+const handleLogin = (e) => {
     e.preventDefault();
     
     const username = elements.usernameInput.value.trim();
     const course = elements.educationSelect.value;
     const rememberMe = elements.rememberMe.checked;
     
-    if (!username || !course) {
-        alert('Please enter your name and select a course.');
-        return;
+    if (!username || !course) return alert('Please enter your name and select a course.');
+    
+    const storedUserData = localStorage.getItem('userData');
+    if (rememberMe && storedUserData) {
+        const parsedData = JSON.parse(storedUserData);
+        if (parsedData.fullName.toLowerCase() === username.toLowerCase()) {
+            console.log("Returning user found. Loading data.");
+            appState.currentUser = parsedData;
+            localStorage.setItem('lastLogin', new Date().toISOString());
+            return proceedAfterLogin();
+        }
     }
-    
-    // Get first two names
+
+    console.log("Creating a new user profile.");
     const nameParts = username.split(' ');
-    const firstTwoNames = nameParts.slice(0, 2).join(' ');
-    
-    // Create user object
     appState.currentUser = {
-        username: firstTwoNames,
+        username: nameParts.slice(0, 2).join(' '),
         fullName: username,
         course: course,
         joined: new Date().toISOString(),
         stats: {
-            quizzesTaken: 0,
-            averageScore: 0,
-            challengesWon: 0,
-            totalQuestions: 0,
-            totalVisits: 0,
-            todayVisits: 0,
-            lastVisit: null,
-            challengesShared: 0,
-            videosWatched: 0,
-            videosCompleted: 0,
-            questionTimes: [],
-            subjectPerformance: {},
-            recentActivities: []
+            quizzesTaken: 0, averageScore: 0, challengesWon: 0, totalQuestions: 0,
+            totalVisits: 1, todayVisits: 1, lastVisit: new Date().toISOString(), challengesShared: 0,
+            videosWatched: 0, videosCompleted: 0, questionTimes: [],
+            subjectPerformance: {}, recentActivities: []
         }
     };
     
-    // Handle remember me choice
     if (rememberMe) {
         elements.consentModal.classList.add('active');
     } else {
+        localStorage.clear();
         elements.noStorageModal.classList.add('active');
         proceedAfterLogin();
     }
-}
+};
 
-// Handle consent agreement
-function agreeConsent() {
+/**
+ * UPDATED: Handles user agreement to store data.
+ */
+const agreeConsent = () => {
     localStorage.setItem('rememberMe', 'true');
     localStorage.setItem('userData', JSON.stringify(appState.currentUser));
     localStorage.setItem('lastLogin', new Date().toISOString());
     elements.consentModal.classList.remove('active');
     proceedAfterLogin();
-}
+};
 
-// Handle consent denial
-function denyConsent() {
-    localStorage.removeItem('rememberMe');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('lastLogin');
+/**
+ * UPDATED: Handles user denial to store data.
+ */
+const denyConsent = () => {
+    localStorage.clear();
     elements.consentModal.classList.remove('active');
     elements.noStorageModal.classList.add('active');
-}
+};
 
-// Proceed after login processing
-function proceedAfterLogin() {
-    updateUserStats('visit');
+const proceedAfterLogin = () => {
     updateUserInterface();
     showPage('home');
-}
+};
 
 // Update UI with user data
 function updateUserInterface() {
@@ -5958,43 +5893,61 @@ function shuffleArray(array) {
     return newArray;
 }
 
-// Start a quiz with randomized questions
-// Start a quiz with randomized questions (with 25 question limit)
+/**
+ * Starts a quiz with a given ID.
+ * It shuffles questions and their options, limits the quiz to 25 questions,
+ * and initializes the quiz state.
+ * @param {string} quizId - The ID of the quiz to start.
+ */
 function startQuiz(quizId) {
-    // Find the quiz
+    // Find the quiz from the app state
     let selectedQuiz = null;
     for (const subject in appState.quizzes) {
         selectedQuiz = appState.quizzes[subject].find(q => q.id === quizId);
         if (selectedQuiz) break;
     }
     
-    if (!selectedQuiz) return;
+    if (!selectedQuiz) {
+        console.error("Quiz not found:", quizId);
+        return;
+    }
 
-    // Animate navigation out based on screen size
+    // Animate navigation menu out of view
     if (window.innerWidth <= 768) {
-        // Mobile view: slide out hamburger menu to the right
         gsap.to(".ham", { x: "150%", duration: 0.5, ease: "sine.out" });
     } else {
-        // Desktop view: slide out side navigation to the left
         gsap.to(".side-nav", { x: "-100%", duration: 0.5, ease: "sine.out" });
     }
     
-    // Create a copy of the quiz to avoid modifying the original
+    // Create a deep copy to avoid modifying the original quiz data
     const quizCopy = JSON.parse(JSON.stringify(selectedQuiz));
     
-    // LIMIT QUESTIONS TO MAXIMUM OF 25
-    if (quizCopy.questions.length > 25) {
-        const shuffledQuestions = shuffleArray([...quizCopy.questions]);
-        quizCopy.questions = shuffledQuestions.slice(0, 25);
-        setTimeout(() => {
-            alert(`This quiz has many questions! You'll answer 25 randomly selected questions.`);
-        }, 500);
+   // --- REPLACE THE QUESTION SHUFFLING LOGIC WITH THIS ---
+    if (appState.isChallengeMode && appState.challengeInfo.qOrder) {
+        // For challenges, use the specific question order from the URL
+        const orderedQuestions = appState.challengeInfo.qOrder.map(index => quizCopy.questions[index]);
+        quizCopy.questions = orderedQuestions.slice(0, 25); // Still cap at 25
+        console.log("Challenge mode: Using pre-defined question order.");
+    } else {
+        // For regular quizzes, shuffle the questions
+        if (quizCopy.questions.length > 25) {
+            const shuffledQuestions = shuffleArray([...quizCopy.questions]);
+            quizCopy.questions = shuffledQuestions.slice(0, 25);
+        }
+        quizCopy.questions = shuffleArray(quizCopy.questions);
     }
+    
+    // Store the final question order to be used for sharing
+    appState.questionOrder = selectedQuiz.questions.map(q => {
+        return quizCopy.questions.findIndex(shuffledQ => shuffledQ.question === q.question);
+    }).filter(index => index !== -1);
+    // --- END OF REPLACEMENT ---
+
     
     // Randomize the order of questions
     quizCopy.questions = shuffleArray(quizCopy.questions);
     
-    // Randomize the order of options for each question
+    // Randomize the order of options for each question and update the correct answer index
     quizCopy.questions.forEach(question => {
         const originalCorrectIndex = question.correctAnswer;
         const optionIndices = question.options.map((_, index) => index);
@@ -6005,6 +5958,7 @@ function startQuiz(quizId) {
         question.correctAnswer = newCorrectIndex;
     });
     
+    // Initialize the state for the current quiz
     appState.currentQuiz = quizCopy;
     appState.currentQuestion = 0;
     appState.userAnswers = new Array(quizCopy.questions.length).fill(null);
@@ -6014,27 +5968,27 @@ function startQuiz(quizId) {
     showPage('quiz');
     showQuestion(0);
     
-    // Start timer
+    // Start the timer for the first question
     appState.timeLeft = 60;
     elements.timeLeft.textContent = appState.timeLeft;
-    
     if (appState.timer) clearInterval(appState.timer);
     appState.timer = setInterval(updateTimer, 1000);
-    
     appState.questionStartTime[0] = Date.now();
 }
 
-// Corrected: Updates the timer and the visual timer bar.
+/**
+ * Updates the timer every second and handles time-out.
+ */
 function updateTimer() {
     appState.timeLeft--;
     elements.timeLeft.textContent = appState.timeLeft;
 
     const timerBar = document.getElementById('timer-bar');
     if (timerBar) {
-        // The percentage is correctly calculated based on 60 seconds.
         const percentage = (appState.timeLeft / 60) * 100;
         timerBar.style.width = `${percentage}%`;
 
+        // Add a pulsing effect when time is low
         if (appState.timeLeft <= 10) {
             timerBar.classList.add('time-low-pulse');
         } else {
@@ -6042,15 +5996,20 @@ function updateTimer() {
         }
     }
 
+    // If time runs out, treat it as an incorrect answer and move to the next question
     if (appState.timeLeft <= 0) {
         clearInterval(appState.timer);
+        appState.userAnswers[appState.currentQuestion] = { answer: -1, timeTaken: 60 }; // Mark as unanswered
         goToNextQuestion();
     }
 }
 
-// Corrected: Resets the timer bar when a new question is shown.
+/**
+ * Displays the current question and its options.
+ * @param {number} index - The index of the question to show.
+ */
 function showQuestion(index) {
-    // FIX: This line resets the timer bar to full when a new question is displayed.
+    // Reset the timer bar for the new question
     const timerBar = document.getElementById('timer-bar');
     if (timerBar) {
         timerBar.style.width = '100%';
@@ -6063,54 +6022,73 @@ function showQuestion(index) {
     elements.questionText.textContent = question.question;
     elements.optionsContainer.innerHTML = '';
     
+    // Create and display the option buttons
     question.options.forEach((option, i) => {
         const optionElement = document.createElement('div');
         optionElement.className = 'option';
         optionElement.dataset.index = i;
         optionElement.textContent = option;
-        
-        if (appState.userAnswers[index] && appState.userAnswers[index].answer === i) {
-            optionElement.classList.add('selected');
-        }
-        
         optionElement.addEventListener('click', () => selectOption(i));
         elements.optionsContainer.appendChild(optionElement);
     });
     
-    elements.prevQuestion.disabled = index === 0;
-    elements.nextQuestion.textContent = index === appState.currentQuiz.questions.length - 1 ? 'Finish Quiz' : 'Next';
+    // **FIX:** The lines that referenced the deleted "next" and "previous" buttons have been removed
+    // to prevent the script from breaking here.
 }
 
-// Select an option
+/**
+ * Handles the user selecting an answer option.
+ * @param {number} optionIndex - The index of the selected option.
+ */
 function selectOption(optionIndex) {
+    // Stop the timer as soon as an answer is selected
+    clearInterval(appState.timer);
+
+    const options = elements.optionsContainer.querySelectorAll('.option');
+    // Disable all options to prevent multiple clicks
+    options.forEach(option => option.classList.add('disabled'));
+
+    // Record the answer and time
     const timeTaken = (Date.now() - appState.questionStartTime[appState.currentQuestion]) / 1000;
     appState.userAnswers[appState.currentQuestion] = {
         answer: optionIndex,
         timeTaken: timeTaken
     };
-    
-    const options = elements.optionsContainer.querySelectorAll('.option');
-    options.forEach((option, i) => {
-        option.classList.toggle('selected', i === optionIndex);
-    });
-}
 
-// Go to the previous question
-function goToPreviousQuestion() {
-    if (appState.currentQuestion > 0) {
-        appState.currentQuestion--;
-        showQuestion(appState.currentQuestion);
-        
-        // Reset and restart timer
-        appState.timeLeft = 60;
-        elements.timeLeft.textContent = appState.timeLeft;
-        if (appState.timer) clearInterval(appState.timer);
-        appState.timer = setInterval(updateTimer, 1000);
-        appState.questionStartTime[appState.currentQuestion] = Date.now();
+    // Provide immediate visual feedback
+    const question = appState.currentQuiz.questions[appState.currentQuestion];
+    const selectedOption = options[optionIndex];
+
+    if (optionIndex === question.correctAnswer) {
+        selectedOption.classList.add('correct');
+    } else {
+        selectedOption.classList.add('incorrect');
+        options[question.correctAnswer].classList.add('correct'); // Show the correct one
     }
+
+    // Wait for feedback, then animate to the next question
+    setTimeout(() => {
+        const questionCard = document.querySelector('.question-card');
+        gsap.to(questionCard, {
+            opacity: 0,
+            y: -20,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+                goToNextQuestion();
+                // Fade the new question in
+                gsap.fromTo(questionCard,
+                    { opacity: 0, y: 20 },
+                    { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
+                );
+            }
+        });
+    }, 1200); // 1.2-second delay
 }
 
-// Navigates to the next question or finishes the quiz.
+/**
+ * Navigates to the next question or finishes the quiz if it's the last one.
+ */
 function goToNextQuestion() {
     if (appState.currentQuestion >= appState.currentQuiz.questions.length - 1) {
         finishQuiz();
@@ -6157,7 +6135,7 @@ function finishQuiz() {
         }
     });
 
-    const averageTime = answeredQuestions > 0 ? (totalTime / answeredQuestions).toFixed(1) : 0;
+     const averageTime = answeredQuestions > 0 ? (totalTime / answeredQuestions).toFixed(1) : 0;
     const accuracy = (score / quiz.questions.length) * 100;
 
     // Update results page
@@ -6240,6 +6218,38 @@ function finishQuiz() {
             averageTime: averageTime
         });
     }
+
+    // --- ADD THIS CHALLENGE LOGIC BLOCK ---
+    elements.challengeResultMessage.style.display = 'none'; // Reset display
+    if (appState.isChallengeMode) {
+        const challengerScore = parseInt(appState.challengeInfo.score.split('/')[0]);
+        let resultMessage = '';
+        let challengeWon = false;
+
+        if (score > challengerScore) {
+            challengeWon = true;
+            resultMessage = `Congratulations! You beat ${appState.challengeInfo.name}'s score of ${challengerScore}!`;
+            elements.challengeResultMessage.className = 'win';
+        } else if (score === challengerScore) {
+            resultMessage = `It's a tie! You matched ${appState.challengeInfo.name}'s score. Try again to win!`;
+            elements.challengeResultMessage.className = 'loss';
+        } else {
+            resultMessage = `Good try! You didn't beat ${appState.challengeInfo.name}'s score this time. Keep practicing!`;
+            elements.challengeResultMessage.className = 'loss';
+        }
+        
+        elements.challengeResultMessage.textContent = resultMessage;
+        elements.challengeResultMessage.style.display = 'block';
+
+        if (localStorage.getItem('rememberMe') === 'true') {
+            updateUserStats('challenge', { won: challengeWon });
+        }
+
+        // Reset challenge state
+        appState.isChallengeMode = false;
+        appState.challengeInfo = null;
+    }
+    // --- END OF CHALLENGE LOGIC BLOCK ---
     
     showPage('results');
 }
@@ -6382,6 +6392,24 @@ function updateUserStats(type, data) {
         case 'challengeShared':
             userData.stats.challengesShared = (userData.stats.challengesShared || 0) + 1;
             break;
+            
+         // --- ADD THIS NEW CASE FOR CHALLENGES ---
+        case 'challenge':
+            if (data.won) {
+                userData.stats.challengesWon = (userData.stats.challengesWon || 0) + 1;
+            }
+            // Add to recent activity
+            userData.stats.recentActivities.unshift({
+                type: 'challenge',
+                won: data.won,
+                opponent: appState.challengeInfo?.name || 'a friend',
+                date: new Date().toISOString()
+            });
+            if (userData.stats.recentActivities.length > 10) {
+                userData.stats.recentActivities.pop();
+            }
+            break;
+        // --- END OF NEW CASE ---
     }
     
     // Save updated data
@@ -6401,14 +6429,28 @@ function retryQuiz() {
     startQuiz(appState.currentQuiz.id);
 }
 
-// Share score on social media
+// --- REPLACE THE ENTIRE shareScore FUNCTION WITH THIS ---
 function shareScore(platform) {
-    const score = elements.finalScore.textContent;
-    const message = `I just scored ${score} on the ${appState.currentQuiz.title} quiz! Try to beat my score!`;
-    const url = window.location.href.split('?')[0] + `?challenge=${appState.currentUser.username}&quiz=${appState.currentQuiz.id}&score=${score}`;
+    const scoreText = elements.finalScore.textContent;
+    const speedText = elements.averageSpeed.textContent.replace('s', '');
+    const pfp = localStorage.getItem('profileImage') || 'https://i.imgur.com/your-default-favicon.png'; // Use default if no pfp
+
+    // Create a clean base URL
+    const baseUrl = window.location.href.split('?')[0];
+
+    const params = new URLSearchParams({
+        challenge: appState.currentUser.username,
+        quiz: appState.currentQuiz.id,
+        score: scoreText,
+        speed: speedText,
+        pfp: pfp,
+        qOrder: appState.questionOrder.join(',')
+    });
+
+    const url = `${baseUrl}?${params.toString()}`;
+    const message = `I just scored ${scoreText} on the ${appState.currentQuiz.title} quiz! Can you beat my score?`;
     
     let shareUrl;
-    
     switch (platform) {
         case 'whatsapp':
             shareUrl = `https://wa.me/?text=${encodeURIComponent(message + ' ' + url)}`;
@@ -6420,29 +6462,49 @@ function shareScore(platform) {
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
             break;
         case 'twitter':
-            shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message + ' ' + url)}`;
+            shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(url)}`;
             break;
         default:
             return;
     }
     
-    // Update challenges shared count
     if (appState.currentUser && localStorage.getItem('rememberMe') === 'true') {
         updateUserStats('challengeShared');
     }
     
     window.open(shareUrl, '_blank');
 }
+// --- END OF REPLACEMENT ---
 
-// Copy score link to clipboard
+// --- REPLACE THE ENTIRE copyScoreLink FUNCTION WITH THIS ---
 function copyScoreLink() {
-    const score = elements.finalScore.textContent;
-    const url = window.location.href.split('?')[0] + `?challenge=${appState.currentUser.username}&quiz=${appState.currentQuiz.id}&score=${score}`;
+    const scoreText = elements.finalScore.textContent;
+    const speedText = elements.averageSpeed.textContent.replace('s', '');
+    const pfp = localStorage.getItem('profileImage') || 'https://i.imgur.com/your-default-favicon.png';
+
+    const baseUrl = window.location.href.split('?')[0];
+    const params = new URLSearchParams({
+        challenge: appState.currentUser.username,
+        quiz: appState.currentQuiz.id,
+        score: scoreText,
+        speed: speedText,
+        pfp: pfp,
+        qOrder: appState.questionOrder.join(',')
+    });
+    const url = `${baseUrl}?${params.toString()}`;
     
     navigator.clipboard.writeText(url).then(() => {
-        alert('Link copied to clipboard!');
+        alert('Challenge link copied to clipboard!');
+        if (appState.currentUser && localStorage.getItem('rememberMe') === 'true') {
+            updateUserStats('challengeShared');
+        }
+    }).catch(err => {
+        console.error('Failed to copy link: ', err);
+        alert('Could not copy link. Please try again.');
     });
 }
+// --- END OF REPLACEMENT ---
+
 
 // Initialize study page
 function initStudyPage() {
@@ -6885,199 +6947,380 @@ function calculateSpeedCategory() {
 }
 
 // Handle profile image upload
-function handleProfileUpload(e) {
+/**
+ * UPDATED: Saves profile image only if user has consented.
+ */
+const handleProfileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     
     const reader = new FileReader();
-    reader.onload = function(event) {
+    reader.onload = (event) => {
         const imageData = event.target.result;
-        
-        // Update profile images
         elements.navProfileImage.innerHTML = `<img src="${imageData}" alt="Profile">`;
         elements.dashboardProfileImage.innerHTML = `<img src="${imageData}" alt="Profile">`;
         
-        // Save to localStorage if remember me is enabled
         if (localStorage.getItem('rememberMe') === 'true') {
             localStorage.setItem('profileImage', imageData);
-            
-            // Update user data
-            const userData = JSON.parse(localStorage.getItem('userData'));
-            userData.profileImage = imageData;
-            localStorage.setItem('userData', JSON.stringify(userData));
-            appState.currentUser = userData;
         }
     };
-    
     reader.readAsDataURL(file);
-}
+};
 
 // Handle logout with confirmation
-function handleLogout() {
-    // Show the existing modal
+/**
+ * UPDATED: Handles logout with options to clear or keep data.
+ */
+const handleLogout = () => {
     const logoutModal = document.getElementById('logout-modal');
-    if (logoutModal) {
-        logoutModal.classList.add('active');
-        
-        // Add event listeners to the buttons (if not already added)
-        const addButtonListeners = () => {
-            const clearBtn = document.getElementById('logout-clear');
-            const keepBtn = document.getElementById('logout-keep');
-            const cancelBtn = document.getElementById('logout-cancel');
-            
-            if (clearBtn) {
-                clearBtn.onclick = () => {
-                    // Clear all user data
-                    localStorage.removeItem('userData');
-                    localStorage.removeItem('profileImage');
-                    localStorage.removeItem('lastLogin');
-                    localStorage.removeItem('rememberMe');
-                    
-                    // Clear current user
-                    appState.currentUser = null;
-                    
-                    // Hide modal and show login page
-                    logoutModal.classList.remove('active');
-                    showPage('login');
-                };
-            }
-            
-            if (keepBtn) {
-                keepBtn.onclick = () => {
-                    // Just clear current user, keep data in localStorage
-                    appState.currentUser = null;
-                    
-                    // Update last login timestamp
-                    localStorage.setItem('lastLogin', new Date().toISOString());
-                    
-                    // Hide modal and show login page
-                    logoutModal.classList.remove('active');
-                    showPage('login');
-                };
-            }
-            
-            if (cancelBtn) {
-                cancelBtn.onclick = () => {
-                    // Just hide the modal
-                    logoutModal.classList.remove('active');
-                };
-            }
-        };
-        
-        // Add listeners
-        addButtonListeners();
-        
-        // Add event listener for clicking outside the modal to close it
-        const handleOutsideClick = (e) => {
-            if (e.target === logoutModal) {
-                logoutModal.classList.remove('active');
-                logoutModal.removeEventListener('click', handleOutsideClick);
-            }
-        };
-        
-        logoutModal.addEventListener('click', handleOutsideClick);
-        
-        // Add escape key to close modal
-        const handleEscapeKey = (e) => {
-            if (e.key === 'Escape') {
-                logoutModal.classList.remove('active');
-                document.removeEventListener('keydown', handleEscapeKey);
-            }
-        };
-        
-        document.addEventListener('keydown', handleEscapeKey);
-    }
-}
+    if (!logoutModal) return;
+    logoutModal.classList.add('active');
+
+    const clearBtn = document.getElementById('logout-clear');
+    const keepBtn = document.getElementById('logout-keep');
+    const cancelBtn = document.getElementById('logout-cancel');
+
+    clearBtn.onclick = () => {
+        console.log("Logging out and clearing all data.");
+        localStorage.clear(); // Strictly clears everything.
+        appState.currentUser = null;
+        logoutModal.classList.remove('active');
+        elements.usernameInput.value = '';
+        elements.educationSelect.value = '';
+        elements.rememberMe.checked = false;
+        updateUserInterface();
+        showPage('login');
+    };
+
+    keepBtn.onclick = () => {
+        console.log("Logging out but keeping data.");
+        appState.currentUser = null;
+        logoutModal.classList.remove('active');
+        showPage('login');
+    };
+
+    cancelBtn.onclick = () => logoutModal.classList.remove('active');
+};
+
 
 // Add event listener to your logout button
 if (elements.logoutBtn) {
     elements.logoutBtn.addEventListener('click', handleLogout);
 }
 
-// Initialize Three.js background for login page
-function initVantaBackground() {
-    if (typeof VANTA !== 'undefined') {
-        try {
-            // Destroy existing effect if any
-            if (window.vantaEffect) {
-                window.vantaEffect.destroy();
+/**
+ * FIXED: Initializes and controls the interactive kaleidoscope background.
+/**
+ * UPGRADED: Initializes and controls a futuristic, physics-based kaleidoscope background.
+ * Features:
+ * - Automatic, complex background animations.
+ * - Interactive user drawing with a glowing effect.
+ * - Drawn shapes are affected by gravity after a delay.
+/**
+ * UPGRADED V2: Initializes and controls a highly dynamic, physics-based kaleidoscope.
+ * Features:
+ * - Automatic random shape generation.
+ * - Five unique and unpredictable physics simulations for shapes:
+ * 1. Gravity Shatter: Falls and shatters on impact.
+ * 2. Bouncing Shatter: Bounces three times before shattering.
+ * 3. Wind Shear: Dissolves into dust particles blown by wind.
+ * 4. Windy Shatter: Shatters on impact, and shards are blown by wind.
+ * 5. Evaporation: Dissolves into rising, fading droplets.
+ * - Enhanced particle effects for smoke, shards, dust, and droplets.
+ * - Interactive user drawing with all physics effects applied.
+ */
+function initKaleidoscopeBackground() {
+    const canvas = document.getElementById('kaleidoscope-bg');
+    if (!canvas) {
+        console.error('Kaleidoscope canvas not found!');
+        return;
+    }
+    const ctx = canvas.getContext('2d');
+
+    const loginContainer = document.querySelector('.login-container');
+    const loginForm = document.querySelector('.login');
+    if (loginContainer) loginContainer.style.pointerEvents = 'none';
+    if (loginForm) loginForm.style.pointerEvents = 'auto';
+
+    let width, height, centerX, centerY;
+    let hue = 0;
+    const slices = 10;
+    const angleSlice = (Math.PI * 2) / slices;
+    const GRAVITY = 0.2;
+    const WIND_FORCE = 0.15;
+
+    const mouse = { x: 0, y: 0, oldX: 0, oldY: 0, isDown: false };
+
+    let autoMovers = [];
+    let particles = [];
+    let drawnObjects = []; // Holds both user-drawn and auto-generated shapes
+    let currentPath = [];
+
+    // --- CLASSES for Physics and Effects ---
+
+    class Particle {
+        constructor(x, y, color, size, life) {
+            this.x = x; this.y = y; this.color = color;
+            this.size = size; this.life = life; this.initialLife = life;
+        }
+        update() { this.life--; }
+        draw(context) {
+            context.fillStyle = this.color;
+            context.globalAlpha = Math.max(0, this.life / this.initialLife);
+            context.beginPath();
+            context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            context.fill();
+            context.globalAlpha = 1;
+        }
+    }
+
+    class Shard extends Particle {
+        constructor(x, y, color, windAffected = false) {
+            super(x, y, color, Math.random() * 8 + 2, 120);
+            this.vx = (Math.random() - 0.5) * 15;
+            this.vy = (Math.random() * -10) - 5;
+            this.angle = Math.random() * Math.PI * 2;
+            this.rotation = (Math.random() - 0.5) * 0.2;
+            this.windAffected = windAffected;
+        }
+        update() {
+            super.update();
+            this.vy += GRAVITY;
+            if (this.windAffected) this.vx += WIND_FORCE;
+            this.x += this.vx; this.y += this.vy; this.angle += this.rotation;
+        }
+        draw(context) {
+            context.save();
+            context.translate(this.x, this.y);
+            context.rotate(this.angle);
+            context.globalAlpha = Math.max(0, this.life / this.initialLife);
+            context.fillStyle = this.color;
+            context.beginPath();
+            context.moveTo(0, -this.size);
+            context.lineTo(-this.size / 2, this.size);
+            context.lineTo(this.size / 2, this.size);
+            context.closePath();
+            context.fill();
+            context.restore();
+        }
+    }
+    
+    class Dust extends Particle {
+        constructor(x, y, color) {
+            super(x, y, color, Math.random() * 2 + 1, 200);
+            this.vx = (Math.random() - 0.2) * 2; // Start with a little upward pop
+            this.vy = (Math.random() - 1) * 2;
+        }
+        update() {
+            super.update();
+            this.vx += WIND_FORCE;
+            this.x += this.vx; this.y += this.vy;
+            this.size *= 0.99;
+        }
+    }
+    
+    class Droplet extends Particle {
+        constructor(x, y, color) {
+            super(x, y, color, Math.random() * 4 + 2, 180);
+        }
+        update() {
+            super.update();
+            this.y -= 0.3; // Rise slowly
+            this.x += (Math.random() - 0.5) * 0.5;
+            this.size *= 0.985;
+        }
+    }
+
+    class AutoMover {
+        constructor() { this.reset(); this.oldX = this.x; this.oldY = this.y; }
+        reset() {
+            this.x = Math.random() * width; this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 3; this.vy = (Math.random() - 0.5) * 3;
+            this.life = Math.random() * 300 + 150;
+            this.angle = 0; this.turnSpeed = Math.random() * 0.1 - 0.05;
+        }
+        update() {
+            this.life--; if (this.life <= 0) this.reset();
+            this.oldX = this.x; this.oldY = this.y;
+            this.angle += this.turnSpeed;
+            this.vx += Math.cos(this.angle) * 0.1; this.vy += Math.sin(this.angle) * 0.1;
+            this.x += this.vx; this.y += this.vy;
+            if (this.x > width || this.x < 0) this.vx *= -1;
+            if (this.y > height || this.y < 0) this.vy *= -1;
+            this.vx *= 0.99; this.vy *= 0.99;
+        }
+    }
+    
+    class DrawnShape {
+        constructor(points, color) {
+            this.points = points; this.color = color;
+            this.vy = 0; this.vx = 0; this.bouncesLeft = 3;
+            this.isPhysicsActive = false;
+            const deathTypes = ['shatter', 'bounce', 'wind', 'windyShatter', 'evaporate'];
+            this.deathType = deathTypes[Math.floor(Math.random() * deathTypes.length)];
+            setTimeout(() => { this.isPhysicsActive = true; }, 1500);
+        }
+    }
+
+    // --- SETUP and EVENT LISTENERS ---
+
+    function setup() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        centerX = width / 2; centerY = height / 2;
+        ctx.fillStyle = 'black'; ctx.fillRect(0, 0, width, height);
+        autoMovers = Array.from({ length: 5 }, () => new AutoMover());
+    }
+
+    window.addEventListener('resize', setup);
+
+    canvas.addEventListener('mousedown', (e) => {
+        mouse.isDown = true; mouse.x = e.clientX; mouse.y = e.clientY;
+        currentPath = [{ x: mouse.x, y: mouse.y }];
+    });
+
+    canvas.addEventListener('mouseup', (e) => {
+        if (!mouse.isDown) return;
+        mouse.isDown = false;
+        if (currentPath.length > 2) {
+            drawnObjects.push(new DrawnShape(currentPath, `hsl(${hue}, 100%, 60%)`));
+        }
+        currentPath = [];
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        mouse.oldX = mouse.x; mouse.oldY = mouse.y;
+        mouse.x = e.clientX; mouse.y = e.clientY;
+        if (mouse.isDown) { currentPath.push({ x: mouse.x, y: mouse.y }); }
+    });
+
+    function createRandomShape() {
+        if (drawnObjects.length > 5) return; // Prevent too many objects
+        const startX = Math.random() * width * 0.8 + width * 0.1;
+        const startY = Math.random() * height * 0.4; // Appear in top half
+        const points = [];
+        const length = Math.random() * 100 + 50;
+        const angle = Math.random() * Math.PI * 2;
+        points.push({ x: startX, y: startY });
+        points.push({ x: startX + Math.cos(angle) * length, y: startY + Math.sin(angle) * length });
+        drawnObjects.push(new DrawnShape(points, `hsl(${Math.random() * 360}, 100%, 70%)`));
+    }
+
+    // --- DRAWING & PHYSICS ---
+
+    function drawKaleidoscopePattern(drawFunc) {
+        ctx.save(); ctx.translate(centerX, centerY);
+        for (let i = 0; i < slices; i++) {
+            ctx.rotate(angleSlice); drawFunc();
+            ctx.save(); ctx.scale(-1, 1); drawFunc(); ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    function drawLine(p1, p2, color, lineWidth) {
+        ctx.strokeStyle = color; ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        ctx.moveTo(p1.x - centerX, p1.y - centerY);
+        ctx.lineTo(p2.x - centerX, p2.y - centerY);
+        ctx.stroke();
+    }
+
+    function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'; ctx.fillRect(0, 0, width, height);
+        hue += 0.5;
+
+        autoMovers.forEach(m => {
+            m.update();
+            drawKaleidoscopePattern(() => drawLine({x:m.oldX,y:m.oldY}, {x:m.x,y:m.y}, `hsl(${hue+40}, 80%, 40%)`, 1));
+        });
+        
+        if (mouse.isDown && currentPath.length > 1) {
+            for (let i=1; i<currentPath.length; i++) {
+                drawKaleidoscopePattern(() => {
+                    drawLine(currentPath[i-1], currentPath[i], `hsl(${hue}, 100%, 70%)`, 5);
+                    drawLine(currentPath[i-1], currentPath[i], 'white', 1);
+                });
+            }
+        }
+
+        drawnObjects.forEach((obj, index) => {
+            let bottomY = 0, rightX = 0;
+            if (obj.isPhysicsActive) {
+                switch(obj.deathType) {
+                    case 'wind': case 'evaporate':
+                        obj.vx = obj.deathType === 'wind' ? obj.vx + WIND_FORCE : 0;
+                        obj.points.forEach((p, pIndex) => {
+                            p.x += obj.vx;
+                            if (Math.random() < 0.1) {
+                                const particle = obj.deathType === 'wind' ? new Dust(p.x, p.y, obj.color) : new Droplet(p.x, p.y, obj.color);
+                                particles.push(particle);
+                                obj.points.splice(pIndex, 1);
+                            }
+                            if (p.x > rightX) rightX = p.x;
+                        });
+                        if (obj.points.length === 0 || rightX > width + 50) drawnObjects.splice(index, 1);
+                        break;
+                    default: // shatter, bounce, windyShatter
+                        obj.vy += GRAVITY;
+                        obj.points.forEach(p => { p.y += obj.vy; if (p.y > bottomY) bottomY = p.y; });
+                }
+            }
+
+            for (let i = 1; i < obj.points.length; i++) {
+                drawKaleidoscopePattern(() => drawLine(obj.points[i-1], obj.points[i], obj.color, 4));
             }
             
-            window.vantaEffect = VANTA.HALO({
-                el: "#vanta-bg",
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                baseColor: 0x3259bb,
-                backgroundColor: 0x0,
-                amplitudeFactor: 3.00,
-                yOffset: -0.01,
-                size: 1.60
-            });
-        } catch (error) {
-            console.error("Error initializing Vanta.js:", error);
-            // Fallback to a simple background gradient
-            document.getElementById('vanta-bg').style.background = 
-                'linear-gradient(135deg, #05359c, #125dff)';
+            if (bottomY > height) {
+                if (obj.deathType === 'bounce' && obj.bouncesLeft > 0) {
+                    obj.bouncesLeft--; obj.vy *= -0.6; // Reverse velocity and dampen
+                    obj.points.forEach(p => p.y = height - (p.y - height)); // Correct position
+                } else {
+                    obj.points.forEach(p => {
+                        const wind = obj.deathType === 'windyShatter';
+                        for (let i = 0; i < 3; i++) particles.push(new Shard(p.x, height, obj.color, wind));
+                    });
+                    drawnObjects.splice(index, 1);
+                }
+            }
+        });
+
+        particles.forEach((p, index) => {
+            p.update(); p.draw(ctx);
+            if (p.life <= 0) particles.splice(index, 1);
+        });
+
+        if (!mouse.isDown && mouse.oldX) {
+            drawKaleidoscopePattern(() => drawLine(mouse, mouse, `hsl(${hue}, 100%, 50%)`, 2));
         }
-    } else {
-        // Fallback if Vanta.js fails to load
-        document.getElementById('vanta-bg').style.background = 
-            'linear-gradient(135deg, #05359c, #125dff)';
+
+        requestAnimationFrame(animate);
     }
+
+    setup();
+    setInterval(createRandomShape, 3000);
+    animate();
 }
 
-// Handle window resize - UPDATED
+
+/**
+ * NEW handleResize function - much simpler.
+ * This will be called automatically by the event listener inside the new background script.
+ */
 function handleResize() {
-    // Update canvas size
-    const canvas = elements.tunnelCanvas;
-    if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    
-    // Update Vanta.js if it exists
-    if (window.vantaEffect) {
-        window.vantaEffect.setSize(window.innerWidth, window.innerHeight);
-        window.vantaEffect.resize();
-    }
-    
-    // Additional responsive adjustments for login form
-    if (appState.currentPage === 'login') {
-        const loginForm = document.querySelector('.login');
-        if (window.innerWidth < 480) {
-            loginForm.style.width = '90%';
-            loginForm.style.padding = '25px 20px';
-        } else {
-            loginForm.style.width = '350px';
-            loginForm.style.padding = '40px';
-        }
-    }
-    
-    // Ensure Vanta background covers entire screen
-    const vantaBg = document.getElementById('vanta-bg');
-    if (vantaBg) {
-        vantaBg.style.width = '100%';
-        vantaBg.style.height = '100%';
-    }
+    // This is a placeholder now. The new background script handles its own resizing.
+    // If you need other elements to be responsive, you can add that logic back here later.
+    console.log("Window resized.");
 }
+
 
 // Initialize the app when the DOM is loaded
 document.addEventListener('DOMContentLoaded', initApp);
 
-// Handle page refresh
+// Handle page refresh - CLEANED UP
 window.addEventListener('beforeunload', () => {
-    // Clean up animation frames
-    if (appState.tunnelAnimation) {
-        cancelAnimationFrame(appState.tunnelAnimation);
-    }
-    
-    // Clean up Vanta.js
-    if (window.vantaEffect) {
-        window.vantaEffect.destroy();
-    }
+    // The new background does not require manual cleanup.
+    // This listener can be used for other cleanup tasks in the future.
+    console.log("Closing app. Any necessary cleanup can go here.");
 });
 
 // AI Response Function (placeholder)

@@ -68,7 +68,10 @@
     --info: #17a2b8;
     --border-color: #e0e0e0;
     --hover-glow: rgba(78, 115, 223, 0.4);
+    --incoming-chat-bg: #f0f0f0;
 }
+
+
 
 body {
     font-family: 'Inter', sans-serif; /* Changed font */
@@ -408,8 +411,8 @@ body {
     top: 0;
     z-index: 100;
     overflow-y: auto;
-     transform: translateX(0);
-    transition: none; /* Remove CSS transitions if using GSAP */
+     /* FIX: Set the initial state to VISIBLE for desktop */
+    transform: translateX(0);
     display: flex;
     flex-direction: column;
 }
@@ -498,7 +501,8 @@ body {
 
 /* Main Content */
 .main-content {
-    margin-left: 240px;
+    /* FIX: Adjusted margin to perfectly match the nav width */
+    margin-left: 250px;
     flex: 1;
     padding: 30px;
     transition: margin-left 0.3s ease;
@@ -511,8 +515,7 @@ body {
     top: 15px;
     right: 15px;
     z-index: 1001;
-     transform: translateX(0);
-    transition: none; /* Remove CSS transitions if using GSAP */
+    /* REMOVE transform and transition from here */
 }
 
 .ham-m {
@@ -1095,6 +1098,8 @@ body {
     transform: rotate(90deg);
 }
 
+
+
 /* Chat Page */
 .chat-container {
     height: calc(100vh - 120px);
@@ -1154,8 +1159,9 @@ body {
 
 .message.incoming {
     align-self: flex-start;
-    background: #f0f0f0;
+    background: var(--incoming-chat-bg);
     border-top-left-radius: 4px;
+    color: var(--text-color); /* This makes it inherit the correct text color */
 }
 
 .message.outgoing {
@@ -1424,11 +1430,13 @@ body {
 
 @media (max-width: 768px) {
     .side-nav {
-        transform: translateX(-100%);
+        /* This rule is now controlled by GSAP, but we keep it as a fallback */
+        transform: translateX(-100%); 
         box-shadow: 5px 0 15px rgba(0,0,0,0.2);
     }
     
     .side-nav.active {
+        /* This rule is also controlled by GSAP, but is a good fallback */
         transform: translateX(0);
     }
     
@@ -1628,6 +1636,244 @@ body {
     background-color: var(--warning);
     color: var(--text-color);
 }
+/* --- ADD ALL OF THESE NEW STYLES --- */
+
+/* Dark & Light Theme Variables */
+:root {
+    /* Light Theme (Default) */
+    --primary-color: #05359c;
+    --secondary-color: #125dff;
+    --accent-color: #4e73df;
+    --text-color: #333;
+    --text-color-secondary: #666;
+    --light-text: #fff;
+    --background: #f0f4f8;
+    --card-bg: #fff;
+    --border-color: #e0e0e0;
+    --hover-glow: rgba(78, 115, 223, 0.4);
+    --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+body.dark-theme {
+    --primary-color: #5a7eff;
+    --secondary-color: #3d5af1;
+    --text-color: #e0e0e0;
+    --text-color-secondary: #a0a0a0;
+    --background: #121212;
+    --card-bg: #1e1e1e;
+    --border-color: #444;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    /* FIX 3: Define the incoming chat background for dark mode */
+    --incoming-chat-bg: #333;
+    /* ADD: Dark mode version for the review cards */
+    --review-item-bg: #2a2a2e; 
+}
+
+/* FIX 1: Corrected Transitions for Theme and Hover Effects */
+/* This rule was overriding hover transitions like transform and box-shadow. */
+/* The fix is to add 'transform' and 'box-shadow' to the list of transitioned properties. */
+body, .side-nav, .main-content, .btn, .quiz-card, .video-card, .stat-card, .profile-header, .chart-container, .recent-activity, .chat-container, .chat-input input, .subject-filter, .option {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ADD: New rules for dark mode quiz page and question text visibility */
+body.dark-theme .option.correct {
+    background-color: #28a745; /* Brighter success green */
+    border-color: #3bc95b;
+}
+body.dark-theme .option.incorrect {
+    background-color: #dc3545; /* Brighter danger red */
+    border-color: #e55361;
+}
+body.dark-theme .question-text {
+    color: #8ab4f8; /* Brighter, saturated blue for visibility */
+}   
+/* Video Search and Filter Styles */
+.video-controls {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-bar {
+    position: relative;
+}
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-secondary);
+}
+#video-search {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border-radius: 25px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+#video-search:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 8px var(--hover-glow);
+}
+
+.video-filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.video-filter-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+.video-filter-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--light-text);
+    border-color: var(--secondary-color);
+}
+.video-filter-btn.active {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Theme Toggle Styles */
+.theme-toggle-container {
+    margin-top: auto; /* Pushes toggle to the bottom */
+    padding: 20px 38px;
+}
+.theme-switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 50px;
+    height: 28px;
+}
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: var(--secondary-color);
+}
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+.theme-label {
+    margin-left: 60px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--light-text);
+    white-space: nowrap;
+}
+
+/* General Body Styling for Theme */
+body {
+    background-color: var(--background);
+    color: var(--text-color);
+}
+
+/* --- FIXES FOR DARK MODE UI --- */
+/* Add this entire block to the end of your <style> section */
+
+/* Fix 1: Make quiz cards on home page dark and text readable */
+body.dark-theme .quiz-card {
+    background: linear-gradient(145deg, #2a2a2e, #1e1e1e);
+    box-shadow: 0 8px 30px var(--shadow-color);
+}
+
+/* --- FIXES FOR DARK MODE UI --- */
+/* Add this entire block to the end of your <style> section */
+
+/* Fix 1: Make quiz cards on home page dark and text readable */
+body.dark-theme .quiz-card {
+    background: linear-gradient(145deg, #2a2a2e, #1e1e1e);
+    box-shadow: 0 8px 30px var(--shadow-color);
+}
+
+body.dark-theme .quiz-description {
+    color: var(--text-color-secondary);
+}
+
+/* Fix 1.2: Make the quiz answer options dark-theme aware */
+body.dark-theme .option {
+    background-color: #2c2c31; /* A neutral dark gray */
+    color: var(--text-color);
+    border: 1px solid #444;
+}
+
+body.dark-theme .option:hover:not(.disabled) {
+    background-color: #3a3a41;
+}
+
+body.dark-theme .option.selected {
+    background-color: var(--secondary-color);
+    border-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+
+/* Fix 2: Make results review cards dark */
+body.dark-theme .review-item {
+    background: var(--review-item-bg, #2a2a2e); /* Using your existing variable */
+    border-left-color: var(--border-color);
+}
+
+/* Fix 2.1: Ensure correct/incorrect borders are still colorful in dark mode */
+body.dark-theme .review-item.correct {
+    border-left-color: var(--success);
+}
+
+body.dark-theme .review-item.incorrect {
+    border-left-color: var(--danger);
+}
+
+
+
 /* END OF NEW STYLES */
 
 
@@ -1684,6 +1930,15 @@ body {
                 <li>
                     <a href="#" data-page="dashboard"><i class="fa fa-users"></i> Dashboard</a>
                 </li>
+                <!-- ======================= 2. Theme Toggle (for Navigation) ======================= -->
+                <li class="theme-toggle-container">
+    <label class="theme-switch" for="theme-toggle">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider round"></span>
+        <span class="theme-label">Dark Mode</span>
+    </label>
+                </li>
+
             </ul>
         </nav>
 
@@ -1753,7 +2008,7 @@ body {
             <div class="timer-text">Time: <span id="time-left">35</span>s</div>
         </div>
         <div id="timer-container">
-            <div id="timer-bar" style="width: 100%;"></div>
+            <div id="timer-bar" style="width: 100%"; ></div>
         </div>
     </div>
     
@@ -1820,26 +2075,30 @@ body {
                 </div>
             </div>
 
-            <!-- Study Page -->
-            <div id="study-page" class="page">
-                <div class="study-header">
-                    <h3>Get Some Bonus Study Videos</h3>
-                </div>
-                
-                <div class="video-grid">
-                    <!-- Video cards will be dynamically generated -->
-                </div>
+           <!-- ======================= 1. Study Page ======================= -->
+<div id="study-page" class="page">
+    <div class="study-header">
+        <h3>Get Some Bonus Study Videos</h3>
+        <div class="video-controls">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="video-search" placeholder="Search videos by title or topic...">
             </div>
+            <div class="video-filters">
+                <button class="video-filter-btn active" data-subject="all">All</button>
+                <button class="video-filter-btn" data-subject="english">English</button>
+                <button class="video-filter-btn" data-subject="pr">PR</button>
+                <button class="video-filter-btn" data-subject="challenge">Challenge</button>
+                <button class="video-filter-btn" data-subject="entrepreneurship">Entrepreneurship</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="video-grid">
+        <!-- Video cards will be dynamically generated here -->
+    </div>
+</div>
 
-            <!-- Video Modal -->
-            <div class="video-modal" id="video-modal">
-                <div class="video-modal-content">
-                    <div class="close-modal" id="close-modal">
-                        <i class="fas fa-times"></i>
-                    </div>
-                    <div id="video-player"></div>
-                </div>
-            </div>
 
             <!-- Chat Page -->
             <div id="chat-page" class="page">
@@ -2004,6 +2263,14 @@ body {
             </div>
         </div>
     </div>
+
+    <!-- Video Modal Structure -->
+<div class="video-modal" id="video-modal">
+    <div class="video-modal-content">
+        <span class="close-modal" id="close-modal">&times;</span>
+        <div id="video-player"></div>
+    </div>
+</div>
 
             <!-- ADD THIS NEW PAGE FOR THE CHALLENGE PROMPT -->
         <div id="challenge-start-page" class="page">
@@ -5078,51 +5345,58 @@ const appState = {
     videos: [
         {
             id: 'cv-tips',
-            title: 'How to Write a CV',
-            description: 'Learn professional CV writing techniques',
+            title: 'How to Write a Professional CV',
+            description: 'Learn the key techniques for crafting a CV that gets noticed by recruiters.',
             subject: 'english',
+            topic: 'CV, resume, cover letter, job application',
             youtubeId: 'VoiO353U10Q'
         },
         {
             id: 'swot-analysis',
-            title: 'SWOT Analysis Explained',
-            description: 'Understanding SWOT analysis for business',
+            title: 'SWOT Analysis Explained Simply',
+            description: 'A clear and simple guide to understanding SWOT analysis for business strategy.',
             subject: 'pr',
+            topic: 'SWOT, business, strategy, planning, strengths, weaknesses',
             youtubeId: 'KUWn_TJTrnU'
         },
         {
             id: 'mindset',
-            title: 'Growth vs Fixed Mindset',
-            description: 'Developing a growth mindset',
+            title: 'Growth vs Fixed Mindset Animation',
+            description: 'An animated explanation of the difference between a growth and a fixed mindset.',
             subject: 'challenge',
+            topic: 'mindset, growth, fixed, learning, psychology',
             youtubeId: 'bEusrD8g-dM'
         },
         {
             id: 'business-plan',
-            title: 'Creating a Business Plan',
-            description: 'Steps to create an effective business plan',
+            title: 'How To Write a Business Plan',
+            description: 'Step-by-step instructions for creating an effective and professional business plan.',
             subject: 'entrepreneurship',
+            topic: 'business plan, startup, funding, enterprise',
             youtubeId: 'Tt08KmFfIYQ'
         },
         {
             id: 'formal-writing',
-            title: 'Formal Writing Skills',
-            description: 'Improving formal business writing',
+            title: 'Improve Your Formal Writing Skills',
+            description: 'Tips and tricks to make your formal and business writing more professional.',
             subject: 'english',
+            topic: 'writing, formal, business, email, memo, letter',
             youtubeId: 's2gYq6KbhfA'
         },
         {
             id: 'creative-thinking',
-            title: 'Creative Thinking Techniques',
-            description: 'Developing creative problem-solving skills',
+            title: '5 Tips for Creative Thinking',
+            description: 'Learn techniques to boost your creative problem-solving abilities.',
             subject: 'challenge',
+            topic: 'creativity, thinking, problem-solving, innovation',
             youtubeId: '-RwkZxGPQb8'
         },
         {
             id: 'team-development',
-            title: 'Team Development Stages',
-            description: 'Understanding Tuckman\'s model of team development',
+            title: 'Tuckman\'s Stages of Team Development',
+            description: 'Understand the forming, storming, norming, and performing model of team development.',
             subject: 'pr',
+            topic: 'teamwork, Tuckman, development, management, product realization',
             youtubeId: 'i5mYphUoOCs'
         }
     ],
@@ -5429,7 +5703,10 @@ const initApp = () => {
     }
 
     const userData = localStorage.getItem('userData');
-    const rememberMe = localStorage.getItem('rememberMe');
+     const rememberMe = localStorage.getItem('rememberMe');
+
+    loadTheme(); // <-- ADDED THIS LINE TO LOAD THE THEME
+
 
     if (userData && rememberMe === 'true') {
         initMotivationalScreen(); // <-- Use the new function
@@ -5516,6 +5793,67 @@ function updateMetaTags() {
 }
 
 
+/**
+ * Handles clicks outside the navigation menu to close it.
+ * This function is added as an event listener to the document when the menu opens.
+ * @param {MouseEvent} event - The click event object.
+ */
+function handleClickOutside(event) {
+    if (!elements.sideNav || !elements.hamMenu) return;
+
+    // Proceed if the click was NOT on the side nav (or its children)
+    // AND it was NOT on the hamburger menu button.
+    if (!elements.sideNav.contains(event.target) && !elements.hamMenu.contains(event.target)) {
+        // If the side nav is active (open), close it.
+        if (elements.sideNav.classList.contains('active')) {
+            toggleNav();
+        }
+    }
+}
+
+/**
+ * Toggles the mobile navigation menu with GSAP animations.
+ * Handles both opening and closing states.
+ */
+function toggleNav() {
+    const sideNav = elements.sideNav;
+    if (!sideNav) return;
+    const isActive = sideNav.classList.contains('active');
+
+    // Prevent running animations if one is already in progress
+    if (gsap.isTweening(sideNav)) {
+        return;
+    }
+
+    if (isActive) {
+        // --- CLOSE ANIMATION ---
+        document.removeEventListener('click', handleClickOutside);
+        gsap.to(sideNav, {
+            x: "-100%", // Use 'x' for consistency
+            duration: 0.1,
+            ease: "sine.inOut",
+            onComplete: () => {
+                sideNav.classList.remove('active');
+            }
+        });
+    } else {
+        // --- OPEN ANIMATION ---
+        sideNav.classList.add('active');
+        gsap.to(sideNav, { // Use 'to' instead of 'from' for more direct control
+            x: "0%", // Animate TO the open state
+            duration: 0.1,
+            ease: "power2.out",
+            onComplete: () => {
+                // Add the event listener to detect clicks outside the menu
+                setTimeout(() => {
+                    document.addEventListener('click', handleClickOutside);
+                }, 0);
+            }
+        });
+    }
+}
+
+
 // Set up all event listeners
 function setupEventListeners() {
     console.log("Setting up event listeners...");
@@ -5525,7 +5863,7 @@ function setupEventListeners() {
         elements.hamMenu.addEventListener('click', toggleNav);
     }
     
-    // Side navigation links
+    // Side navigation links - CORRECTED LOGIC
     const navLinks = document.querySelectorAll('.side-nav a[data-page]');
     if (navLinks.length > 0) {
         navLinks.forEach(link => {
@@ -5533,8 +5871,11 @@ function setupEventListeners() {
                 e.preventDefault();
                 const page = link.getAttribute('data-page');
                 showPage(page);
-                if (window.innerWidth < 768) {
-                    elements.sideNav.classList.remove('active');
+                
+                // If the nav menu is currently open, call toggleNav() to close it.
+                // This triggers the proper slide-out animation.
+                if (elements.sideNav.classList.contains('active')) {
+                    toggleNav();
                 }
             });
         });
@@ -5556,10 +5897,6 @@ function setupEventListeners() {
         });
     }
     
-    // Quiz controls
-    /*if (elements.prevQuestion) elements.prevQuestion.addEventListener('click', goToPreviousQuestion);
-    if (elements.nextQuestion) elements.nextQuestion.addEventListener('click', goToNextQuestion);
-    */
     // Results actions
     if (elements.retryQuiz) elements.retryQuiz.addEventListener('click', retryQuiz);
     if (elements.studyMore) elements.studyMore.addEventListener('click', () => showPage('study'));
@@ -5597,10 +5934,16 @@ function setupEventListeners() {
     if (elements.consentAgree) elements.consentAgree.addEventListener('click', agreeConsent);
     if (elements.noStorageOk) {
         elements.noStorageOk.addEventListener('click', () => {
-            elements.noStorageModal.classList.remove('active');
+            const noStorageModal = document.getElementById('no-storage-modal');
+            if(noStorageModal) noStorageModal.classList.remove('active');
         });
     }
     
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+
     // Window resize event
     window.addEventListener('resize', handleResize);
 }
@@ -5635,101 +5978,6 @@ function showPage(pageId) {
         console.error("Page not found:", pageId);
     }
 }
-
-/**
- * Handles clicks outside the navigation menu to close it.
- * This function is added as an event listener to the document when the menu opens.
- * @param {MouseEvent} event - The click event object.
- */
-function handleClickOutside(event) {
-    // We only proceed if the click was NOT on the side navigation itself (or one of its children)
-    // AND it was NOT on the hamburger menu button that opens it.
-    if (!elements.sideNav.contains(event.target) && !elements.hamMenu.contains(event.target)) {
-        // If the side nav has the 'active' class (meaning it's open),
-        // we call toggleNav() to trigger the closing animation.
-        if (elements.sideNav.classList.contains('active')) {
-            toggleNav();
-        }
-    }
-}
-
-/**
- * Toggles the mobile navigation menu with GSAP animations.
- * Handles both opening and closing states.
- */
-function toggleNav() {
-    const sideNav = elements.sideNav;
-    const isActive = sideNav.classList.contains('active');
-
-    if (isActive) {
-        // --- CLOSE ANIMATION ---
-        // The menu is currently open, so we need to close it.
-
-        // First, we immediately remove the event listener that checks for clicks outside.
-        document.removeEventListener('click', handleClickOutside);
-
-        // Animate the navigation menu off-screen to the left.
-        gsap.to(sideNav, {
-            xPercent: -100, // Move it -100% of its own width on the X-axis.
-            duration: 0.5,
-            ease: "power2.in",
-            onComplete: () => {
-                // After the animation is complete, remove the 'active' class.
-                sideNav.classList.remove('active');
-                
-                // **THE FIX for not opening again**:
-                // We must clear the inline 'transform' style set by GSAP.
-                // This allows our CSS classes to correctly control the menu's position next time.
-                gsap.set(sideNav, { clearProps: "transform" });
-            }
-        });
-    } else {
-        // --- OPEN ANIMATION ---
-        // The menu is closed, so we need to open it.
-
-        // Add the 'active' class to manage the state.
-        sideNav.classList.add('active');
-
-        // Animate the menu in from the left with a bouncy, elastic effect.
-        gsap.from(sideNav, {
-            xPercent: -100, // Animate FROM off-screen left...
-            duration: 0.6,   // ...to its default position (defined in CSS).
-            ease: "elastic.out(1, 0.75)",
-            onComplete: () => {
-                // **THE FIX for clicking outside**:
-                // After the menu has finished opening, we add the event listener to the document
-                // to detect any clicks that happen outside of the menu.
-                document.addEventListener('click', handleClickOutside);
-            }
-        });
-    }
-}
-
-
-
-// --- INSTRUCTIONS ---
-// In your `setupEventListeners` function, find the code for the navigation links
-// and REPLACE it with the following block. This ensures the menu closes correctly
-// when a link is clicked on mobile.
-
-const navLinks = document.querySelectorAll('.side-nav a[data-page]');
-if (navLinks.length > 0) {
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.getAttribute('data-page');
-            showPage(page);
-            
-            // If the nav menu is currently open, call toggleNav() to close it.
-            // This triggers the proper slide-out animation.
-            if (elements.sideNav.classList.contains('active')) {
-                toggleNav();
-            }
-        });
-    });
-}
-
-
 
 // Handle login form submission
 /**
@@ -6507,12 +6755,55 @@ function copyScoreLink() {
 
 
 // Initialize study page
+// --- RE-WRITE the initStudyPage function ---
 function initStudyPage() {
-    // Clear video grid
+    // Render all videos by default
+    renderVideos(appState.videos);
+
+    // Set up event listeners for search and filter, but only once
+    const searchInput = document.getElementById('video-search');
+    const filterButtons = document.querySelectorAll('.video-filter-btn');
+
+    if (!searchInput.dataset.listenerAttached) {
+        searchInput.addEventListener('input', filterAndRenderVideos);
+        searchInput.dataset.listenerAttached = 'true';
+    }
+
+    filterButtons.forEach(button => {
+        if (!button.dataset.listenerAttached) {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                filterAndRenderVideos();
+            });
+            button.dataset.listenerAttached = 'true';
+        }
+    });
+}
+
+function filterAndRenderVideos() {
+    const searchTerm = document.getElementById('video-search').value.toLowerCase();
+    const activeFilter = document.querySelector('.video-filter-btn.active').dataset.subject;
+
+    const filteredVideos = appState.videos.filter(video => {
+        const matchesFilter = activeFilter === 'all' || video.subject === activeFilter;
+        const matchesSearch = searchTerm === '' ||
+                              video.title.toLowerCase().includes(searchTerm) ||
+                              video.topic.toLowerCase().includes(searchTerm);
+        return matchesFilter && matchesSearch;
+    });
+
+    renderVideos(filteredVideos);
+}
+
+function renderVideos(videosToRender) {
     elements.videoGrid.innerHTML = '';
-    
-    // Add all videos to the grid
-    appState.videos.forEach(video => {
+    if (videosToRender.length === 0) {
+        elements.videoGrid.innerHTML = `<p style="text-align: center; color: var(--text-color-secondary); grid-column: 1 / -1;">No videos found matching your criteria.</p>`;
+        return;
+    }
+
+    videosToRender.forEach(video => {
         const videoCard = document.createElement('div');
         videoCard.className = 'video-card';
         videoCard.dataset.id = video.id;
@@ -6535,6 +6826,23 @@ function initStudyPage() {
         elements.videoGrid.appendChild(videoCard);
     });
 }
+
+// --- ADD these new theme functions anywhere in your script ---
+
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle('dark-theme');
+    const theme = body.classList.contains('dark-theme') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+}
+
 
 // Open video modal
 function openVideoModal(youtubeId, videoTitle) {
@@ -7348,3 +7656,6 @@ function getAIResponse(message, quizzes) {
     </script>
 </body>
 </html>
+
+
+
